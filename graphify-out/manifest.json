@@ -1,0 +1,157 @@
+{
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\eslint.config.js": {
+    "mtime": 1777706449.0070472,
+    "ast_hash": "3aa4b57d7f08181d86bde52a4dcb7f22",
+    "semantic_hash": "3aa4b57d7f08181d86bde52a4dcb7f22"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\package.json": {
+    "mtime": 1778148984.7291667,
+    "ast_hash": "7320e5d2187c257647f1fdfcd9f7410a",
+    "semantic_hash": "7320e5d2187c257647f1fdfcd9f7410a"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\vite.config.js": {
+    "mtime": 1777707927.5922098,
+    "ast_hash": "d281d66c4390899f561fa3db9b8e9eac",
+    "semantic_hash": "d281d66c4390899f561fa3db9b8e9eac"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\App.jsx": {
+    "mtime": 1778148617.3473291,
+    "ast_hash": "a30368426863c54040af204ba437e70a",
+    "semantic_hash": "a30368426863c54040af204ba437e70a"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\main.jsx": {
+    "mtime": 1777706449.0755346,
+    "ast_hash": "e13723e2574429d9a6d849727e3ff695",
+    "semantic_hash": "e13723e2574429d9a6d849727e3ff695"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\components\\LandingPage.jsx": {
+    "mtime": 1778148695.3564758,
+    "ast_hash": "28cbfc472da4b97a9641922070f2b5a9",
+    "semantic_hash": "28cbfc472da4b97a9641922070f2b5a9"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\components\\Layout.jsx": {
+    "mtime": 1778150121.616927,
+    "ast_hash": "f6337aac49b0702181dac1cd6471bae2",
+    "semantic_hash": "f6337aac49b0702181dac1cd6471bae2"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\components\\ReportCard.jsx": {
+    "mtime": 1777708450.128894,
+    "ast_hash": "f401436c16561376967fa6f74bdbe7aa",
+    "semantic_hash": "f401436c16561376967fa6f74bdbe7aa"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\context\\AuthContext.jsx": {
+    "mtime": 1778148996.4801261,
+    "ast_hash": "f94581226f1a50950ce4371e0bd7f954",
+    "semantic_hash": "f94581226f1a50950ce4371e0bd7f954"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\Auth.jsx": {
+    "mtime": 1778148785.8192525,
+    "ast_hash": "52048b5d2912fd588d07a591246f4be7",
+    "semantic_hash": "52048b5d2912fd588d07a591246f4be7"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\Dashboard.jsx": {
+    "mtime": 1778148760.1747265,
+    "ast_hash": "946c79bb297e7d6ff0ec62810ca5b891",
+    "semantic_hash": "946c79bb297e7d6ff0ec62810ca5b891"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\Family.jsx": {
+    "mtime": 1778148881.0980406,
+    "ast_hash": "20eeb1f0c9f20b57238dac7c0e4977de",
+    "semantic_hash": "20eeb1f0c9f20b57238dac7c0e4977de"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\ReportAnalysis.jsx": {
+    "mtime": 1778148604.528839,
+    "ast_hash": "1b5ba0b058dbbadf7c6c65ff8355a114",
+    "semantic_hash": "1b5ba0b058dbbadf7c6c65ff8355a114"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\ReportView.jsx": {
+    "mtime": 1778148566.6355596,
+    "ast_hash": "b845c2f94a94bd5a7f1338e888fd1807",
+    "semantic_hash": "b845c2f94a94bd5a7f1338e888fd1807"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\SettingsPage.jsx": {
+    "mtime": 1778150206.4450822,
+    "ast_hash": "8f68be0b81d2b1f06c9efdcbc98dbcf8",
+    "semantic_hash": "8f68be0b81d2b1f06c9efdcbc98dbcf8"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\Trends.jsx": {
+    "mtime": 1778148837.9556344,
+    "ast_hash": "86c24e7d6a0cf37c359d4dc44cd1bdfc",
+    "semantic_hash": "86c24e7d6a0cf37c359d4dc44cd1bdfc"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\pages\\UploadScan.jsx": {
+    "mtime": 1778148505.5933218,
+    "ast_hash": "c25032dffaa53f16cc5957024e8d3c03",
+    "semantic_hash": "c25032dffaa53f16cc5957024e8d3c03"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\src\\services\\api.js": {
+    "mtime": 1777706947.36646,
+    "ast_hash": "dc17931fb946720941ec80dd3623c153",
+    "semantic_hash": "dc17931fb946720941ec80dd3623c153"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\index.js": {
+    "mtime": 1778315911.6957054,
+    "ast_hash": "733064591a20fc5af7d0e3421099f5a9",
+    "semantic_hash": "733064591a20fc5af7d0e3421099f5a9"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\package.json": {
+    "mtime": 1778395001.1354413,
+    "ast_hash": "90a0dfb23942a33545bd946244bebef1",
+    "semantic_hash": "90a0dfb23942a33545bd946244bebef1"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\config\\db.js": {
+    "mtime": 1777706613.9479232,
+    "ast_hash": "1e92a9746a1a99b662d169393d63d07b",
+    "semantic_hash": "1e92a9746a1a99b662d169393d63d07b"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\middleware\\auth.js": {
+    "mtime": 1777706644.7153873,
+    "ast_hash": "1f149d0a6d3935a0a706d1be22f86456",
+    "semantic_hash": "1f149d0a6d3935a0a706d1be22f86456"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\middleware\\upload.js": {
+    "mtime": 1777706653.808029,
+    "ast_hash": "2dbb8ef088a596e922a5bacea294b162",
+    "semantic_hash": "2dbb8ef088a596e922a5bacea294b162"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\models\\Report.js": {
+    "mtime": 1777706637.2673674,
+    "ast_hash": "605ce0f7948db2249210433584fd8da6",
+    "semantic_hash": "605ce0f7948db2249210433584fd8da6"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\models\\User.js": {
+    "mtime": 1777739600.507467,
+    "ast_hash": "91da9388b5db29f044d4f4e1c085b4ed",
+    "semantic_hash": "91da9388b5db29f044d4f4e1c085b4ed"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\routes\\auth.js": {
+    "mtime": 1777706717.234377,
+    "ast_hash": "be6de31251bb65bace4cc4c975bc337d",
+    "semantic_hash": "be6de31251bb65bace4cc4c975bc337d"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\routes\\reports.js": {
+    "mtime": 1778395098.336084,
+    "ast_hash": "7d266cf9569b9d9edb115d542447e10c",
+    "semantic_hash": "7d266cf9569b9d9edb115d542447e10c"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\server\\services\\aiService.js": {
+    "mtime": 1778395098.336084,
+    "ast_hash": "de16c1142540a6ec520aea5a6bd8e2c3",
+    "semantic_hash": "de16c1142540a6ec520aea5a6bd8e2c3"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\README.md": {
+    "mtime": 1777707739.4850447,
+    "ast_hash": "9819de13c6f2ef2aacd139c68c5fd6da",
+    "semantic_hash": "9819de13c6f2ef2aacd139c68c5fd6da"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\index.html": {
+    "mtime": 1778148383.843615,
+    "ast_hash": "e85d37dc119dec29fbfc7c0e24577ce0",
+    "semantic_hash": "e85d37dc119dec29fbfc7c0e24577ce0"
+  },
+  "C:\\Users\\mayan\\Documents\\Hackton Japan\\client\\README.md": {
+    "mtime": 1777706449.079631,
+    "ast_hash": "a28dc4cb878325f3e9e5649f3e1469ac",
+    "semantic_hash": "a28dc4cb878325f3e9e5649f3e1469ac"
+  }
+}
