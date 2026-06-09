@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getReports } from '../services/api';
+import { useTranslation } from 'react-i18next';
+import { getAvatarUrl } from '../utils/avatar';
 import { 
   LayoutDashboard, 
   UploadCloud, 
@@ -31,6 +33,7 @@ import {
 } from 'lucide-react';
 
 export default function Layout() {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -148,20 +151,20 @@ export default function Layout() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Upload & Scan', path: '/upload', icon: UploadCloud },
-    { name: 'Reports', path: '/reports', icon: FileText },
-    { name: 'Trends', path: '/trends', icon: TrendingUp },
-    { name: 'Family', path: '/family', icon: Users },
+    { name: t('Dashboard'), path: '/dashboard', icon: LayoutDashboard },
+    { name: t('Upload & Scan'), path: '/upload', icon: UploadCloud },
+    { name: t('Reports'), path: '/reports', icon: FileText },
+    { name: t('Trends'), path: '/trends', icon: TrendingUp },
+    { name: t('Family'), path: '/family', icon: Users },
   ];
 
   const settingsItems = [
-    { name: 'My Profile', desc: 'Edit name, email & photo', icon: User, action: () => navigate('/settings') },
-    { name: 'Language', desc: user?.language === 'hi' ? 'Hindi' : user?.language === 'ja' ? 'Japanese' : 'English', icon: Globe, action: () => navigate('/settings') },
-    { name: 'Security', desc: 'Change password & 2FA', icon: Shield, action: () => navigate('/settings') },
-    { name: 'Notifications', desc: 'Email & push alerts', icon: Bell, action: () => navigate('/settings') },
-    { name: 'Appearance', desc: 'Light / Dark mode', icon: Moon, action: () => navigate('/settings') },
-    { name: 'Help & Support', desc: 'FAQ & contact us', icon: HelpCircle, action: () => navigate('/settings') },
+    { name: t('My Profile'), desc: t('Edit name, email & photo'), icon: User, action: () => navigate('/settings/profile') },
+    { name: t('Language'), desc: user?.language === 'hi' ? 'Hindi' : user?.language === 'ja' ? 'Japanese' : 'English', icon: Globe, action: () => navigate('/settings/language') },
+    { name: t('Security'), desc: t('Change password & 2FA'), icon: Shield, action: () => navigate('/settings/security') },
+    { name: t('Notifications'), desc: t('Email & push alerts'), icon: Bell, action: () => navigate('/settings/notifications') },
+    { name: t('Appearance'), desc: t('Light / Dark mode'), icon: Moon, action: () => navigate('/settings/appearance') },
+    { name: t('Help & Support'), desc: t('FAQ & contact us'), icon: HelpCircle, action: () => navigate('/settings/help') },
   ];
 
   return (
@@ -206,9 +209,10 @@ export default function Layout() {
         <div className="p-4 border-t border-slate-200">
           <div className="flex items-center gap-3 mb-4 px-2">
             <img 
-              src={`https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`}
+              src={getAvatarUrl(user, 100)}
               alt={user?.name || 'User'} 
               className="w-10 h-10 rounded-full object-cover border border-slate-200"
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=random`; }}
             />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate-900 truncate">{user?.name || 'User'}</p>
@@ -410,16 +414,14 @@ export default function Layout() {
                   <div className="p-5 bg-gradient-to-r from-[#0f172a] to-[#1e293b] text-white">
                     <div className="flex items-center gap-3">
                       <img 
-                        src={`https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random&size=80`}
+                        src={getAvatarUrl(user, 120)}
                         alt={user?.name}
-                        className="w-12 h-12 rounded-full border-2 border-white/30"
+                        className="w-12 h-12 rounded-full border-2 border-white/30 object-cover"
+                        onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=random&size=80`; }}
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold truncate">{user?.name || 'User'}</p>
                         <p className="text-xs text-slate-300 truncate">{user?.email || 'user@example.com'}</p>
-                        <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-1">
-                          {user?.plan === 'premium' ? '⭐ Premium' : 'Free Plan'}
-                        </p>
                       </div>
                     </div>
                   </div>
@@ -450,13 +452,13 @@ export default function Layout() {
                       onClick={() => { navigate('/settings'); setShowSettings(false); }}
                       className="flex-1 text-center text-xs text-[#005a8d] font-semibold py-2 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
                     >
-                      All Settings
+                      {t('All Settings')}
                     </button>
                     <button 
                       onClick={handleLogout}
                       className="flex-1 text-center text-xs text-red-500 font-semibold py-2 rounded-lg hover:bg-red-50 cursor-pointer transition-colors flex items-center justify-center gap-1"
                     >
-                      <LogOut size={12} /> Sign Out
+                      <LogOut size={12} /> {t('Sign Out')}
                     </button>
                   </div>
                 </div>
@@ -465,10 +467,11 @@ export default function Layout() {
 
             {/* User avatar */}
             <img 
-              src={`https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`}
+              src={getAvatarUrl(user, 80)}
               alt="User" 
               className="w-8 h-8 rounded-full border border-slate-200 object-cover ml-1 cursor-pointer hover:ring-2 hover:ring-[#005a8d] transition-all"
               onClick={() => navigate('/settings')}
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=random`; }}
             />
           </div>
         </header>

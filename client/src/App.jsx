@@ -9,6 +9,17 @@ import Trends from './pages/Trends';
 import Family from './pages/Family';
 import Auth from './pages/Auth';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeProvider';
+
+// Settings Pages
+import SettingsMenu from './pages/settings/SettingsMenu';
+import MyProfile from './pages/settings/MyProfile';
+import LanguageSettings from './pages/settings/LanguageSettings';
+import SecuritySettings from './pages/settings/SecuritySettings';
+import NotificationSettings from './pages/settings/NotificationSettings';
+import AppearanceSettings from './pages/settings/AppearanceSettings';
+import HelpSupport from './pages/settings/HelpSupport';
+import SignOut from './pages/settings/SignOut';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -24,7 +35,8 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <ThemeProvider>
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/register" element={<Auth />} />
@@ -35,8 +47,19 @@ function App() {
             <Route path="/reports/:id" element={<ReportView />} />
             <Route path="/trends" element={<Trends />} />
             <Route path="/family" element={<Family />} />
+            
+            {/* Nested Settings Routes */}
+            <Route path="/settings" element={<SettingsMenu />} />
+            <Route path="/settings/profile" element={<MyProfile />} />
+            <Route path="/settings/language" element={<LanguageSettings />} />
+            <Route path="/settings/security" element={<SecuritySettings />} />
+            <Route path="/settings/notifications" element={<NotificationSettings />} />
+            <Route path="/settings/appearance" element={<AppearanceSettings />} />
+            <Route path="/settings/help" element={<HelpSupport />} />
+            <Route path="/settings/signout" element={<SignOut />} />
           </Route>
-        </Routes>
+          </Routes>
+        </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
   );

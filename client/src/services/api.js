@@ -10,13 +10,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Auth
+// Auth & Profile
 export const register = (data) => api.post('/auth/register', data);
 export const login = (data) => api.post('/auth/login', data);
 export const getProfile = () => api.get('/auth/me');
 export const updateProfile = (data) => api.put('/auth/profile', data);
 export const addFamilyMember = (data) => api.post('/auth/family', data);
 export const getFamilyMembers = () => api.get('/auth/family');
+
+// Security & Sessions
+export const enable2FA = () => api.post('/auth/2fa/enable');
+export const verify2FA = (data) => api.post('/auth/2fa/verify', data);
+export const disable2FA = () => api.post('/auth/2fa/disable');
+export const getSessions = () => api.get('/auth/sessions');
+export const logoutSession = (id) => api.delete(`/auth/sessions/${id}`);
+export const logoutAllSessions = () => api.post('/auth/logout-all');
+
+// Settings
+export const getSettings = () => api.get('/settings');
+export const updateNotifications = (data) => api.put('/settings/notifications', data);
+export const updateAppearance = (data) => api.put('/settings/appearance', data);
+export const submitSupportTicket = (data) => api.post('/settings/support', data);
 
 // Reports
 export const analyzeReport = (formData) => api.post('/reports/analyze', formData, {

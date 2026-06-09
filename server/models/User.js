@@ -5,9 +5,10 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, minlength: 6 },
-  language: { type: String, default: 'en', enum: ['en', 'hi', 'ja', 'ta', 'te', 'bn', 'mr'] },
+  language: { type: String, default: 'en' },
   phone: { type: String },
   avatar: { type: String },
+  bio: { type: String },
   plan: { type: String, default: 'free', enum: ['free', 'premium'] },
   reportsThisMonth: { type: Number, default: 0 },
   familyMembers: [{
@@ -15,6 +16,15 @@ const userSchema = new mongoose.Schema({
     relation: String,
     age: Number,
     gender: { type: String, enum: ['male', 'female', 'other'] }
+  }],
+  isTwoFactorEnabled: { type: Boolean, default: false },
+  twoFactorOTP: { type: String },
+  twoFactorOTPExpires: { type: Date },
+  sessions: [{
+    device: String,
+    ip: String,
+    lastActive: Date,
+    token: String
   }]
 }, { timestamps: true });
 
