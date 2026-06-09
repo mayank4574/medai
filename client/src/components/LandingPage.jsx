@@ -105,7 +105,7 @@ const LandingPage = () => {
               </div>
               <div className="w-px h-10 bg-slate-200"></div>
               <div className="text-center">
-                <p className="text-3xl font-black text-slate-900">GPT-4o</p>
+                <p className="text-3xl font-black text-slate-900">Gemini 2.5 Flash</p>
                 <p className="text-xs text-slate-500 font-medium mt-1">Vision Engine</p>
               </div>
             </motion.div>
@@ -126,7 +126,7 @@ const LandingPage = () => {
               <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Brain size={28} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-slate-900">GPT-4o Vision OCR</h3>
+              <h3 className="text-xl font-bold mb-3 text-slate-900">Gemini 2.5 Flash Vision OCR</h3>
               <p className="text-slate-600 text-sm leading-relaxed">
                 Take a blurry photo of a printed lab report. Our advanced vision models extract every single row, reference range, and unit with 99.8% accuracy.
               </p>
@@ -202,7 +202,7 @@ const LandingPage = () => {
             <div className="text-center">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#10b981] to-[#059669] text-white flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-emerald-500/30">2</div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">AI Analyzes</h3>
-              <p className="text-sm text-slate-600">GPT-4o Vision extracts all values, compares with reference ranges, and translates to your language.</p>
+              <p className="text-sm text-slate-600">Gemini 2.5 Flash Vision extracts all values, compares with reference ranges, and translates to your language.</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f59e0b] to-[#d97706] text-white flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-amber-500/30">3</div>
@@ -298,7 +298,7 @@ const LandingPage = () => {
             <Scan size={20} className="text-[#0ea5e9]" />
             <span className="text-xl font-black font-['Space_Grotesk']">MedScanAI</span>
           </div>
-          <p className="text-slate-500 font-medium text-sm">© 2026 MedScanAI. Built with GPT-4o Vision. For hackathon demo purposes.</p>
+          <p className="text-slate-500 font-medium text-sm">© 2026 MedScanAI. Built with Gemini 2.5 Flash Vision. For hackathon demo purposes.</p>
         </div>
       </footer>
 

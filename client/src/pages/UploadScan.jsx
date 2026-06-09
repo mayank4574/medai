@@ -99,7 +99,7 @@ export default function UploadScan() {
     // Step 2: OCR
     setTimeout(() => {
       setProcessStep(2);
-      addLog('Extracting text via GPT-4o Vision OCR...', 'text-emerald-400');
+      addLog('Extracting text via Gemini 2.5 Flash Vision OCR...', 'text-emerald-400');
     }, 1500);
 
     // Step 3: NLP
@@ -349,7 +349,7 @@ export default function UploadScan() {
                   {processStep >= 2 ? <Eye size={16} /> : <Circle size={16} />}
                 </div>
                 <div>
-                  <h4 className={`text-sm font-bold ${processStep >= 2 ? 'text-slate-900' : 'text-slate-500'}`}>2. AI OCR Processing (GPT-4o Vision)</h4>
+                  <h4 className={`text-sm font-bold ${processStep >= 2 ? 'text-slate-900' : 'text-slate-500'}`}>2. AI OCR Processing (Gemini 2.5 Flash Vision)</h4>
                   <p className={`text-xs mt-1 ${processStep >= 2 ? 'text-[#005a8d] font-medium' : 'text-slate-400'}`}>Analyzing document structure...</p>
                 </div>
               </div>

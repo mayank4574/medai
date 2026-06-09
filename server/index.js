@@ -1,4 +1,17 @@
 require('dotenv').config();
+
+// Fail fast if Cloudinary credentials are missing
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+  console.error('\n======================================================');
+  console.error('[CRITICAL] Cloudinary is not configured properly.');
+  console.error('Missing one or more required environment variables:');
+  console.error('- CLOUDINARY_CLOUD_NAME');
+  console.error('- CLOUDINARY_API_KEY');
+  console.error('- CLOUDINARY_API_SECRET');
+  console.error('Server cannot start. Please configure Cloudinary in .env');
+  console.error('======================================================\n');
+  process.exit(1);
+}
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -23,10 +36,6 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-// Static files
-const path = require('path');
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

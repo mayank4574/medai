@@ -301,7 +301,7 @@ export default function ReportView() {
           <div className="bg-gradient-to-br from-[#0f172a] to-[#1e293b] rounded-xl overflow-hidden relative h-32 flex flex-col justify-end p-5">
             <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
             <div className="relative z-10 flex flex-col justify-end h-full">
-              <h4 className="text-white text-sm font-bold">MedScanAI Certified Analysis • {report.aiModel || 'GPT-4o'}</h4>
+              <h4 className="text-white text-sm font-bold">MedScanAI Certified Analysis • {report.aiModel || 'gemini-2.5-flash'}</h4>
               <p className="text-slate-400 text-xs mt-1">Language: {report.summaryLanguage?.toUpperCase() || 'EN'}</p>
             </div>
           </div>

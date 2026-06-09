@@ -28,7 +28,8 @@ const reportSchema = new mongoose.Schema({
   summaryLanguage: { type: String, default: 'en' },
   overallStatus: { type: String, enum: ['normal', 'attention', 'urgent'], default: 'normal' },
   doctorRecommendation: { type: String },
-  aiModel: { type: String, default: 'gpt-4o' }
+  aiModel: { type: String, default: 'gemini-2.5-flash' },
+  analysisSource: { type: String, enum: ['api', 'fallback'], default: 'api' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Report', reportSchema);

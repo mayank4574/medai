@@ -84,31 +84,45 @@ function parseGeminiJson(rawText) {
 }
 
 /**
+ * Custom Error to mark fallback eligibility
+ */
+class GeminiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+    this.name = 'GeminiError';
+    // Only 429, 503, 504, or network timeouts are fallbackable
+    this.isFallbackable = status === 429 || status === 503 || status === 504 || status === 408;
+  }
+}
+
+/**
  * Simple exponential-back-off retry wrapper.
  * Retries on network errors and Gemini 5xx / rate-limit responses.
  *
  * @param {Function} fn   Async function to retry
- * @param {number}   retries   Remaining retry attempts
+ * @param {number}   attempt   Current attempt number
  */
-async function withRetry(fn, retries = MAX_RETRIES) {
+async function withRetry(fn, attempt = 1) {
+  const delays = [2000, 5000, 10000]; // Retry 1 -> 2s, Retry 2 -> 5s, Retry 3 -> 10s
+  
   try {
     return await fn();
   } catch (err) {
-    // Surface permanent errors immediately (bad key, quota exhausted w/ 403, etc.)
-    const isPermanent =
-      err.status === 400 ||
-      err.status === 401 ||
-      err.status === 403;
+    // Determine status code if it's an ApiError from @google/genai
+    const status = err.status || err.code || 500;
+    const isPermanent = status === 400 || status === 401 || status === 403 || status === 404;
 
-    if (retries <= 0 || isPermanent) {
-      throw err;
+    console.error(`[GeminiService] Error Response (Attempt ${attempt}):`, err.message || err);
+
+    if (attempt > 3 || isPermanent) {
+      throw new GeminiError(err.message || 'Gemini API Error', status);
     }
 
-    // Exponential back-off
-    const delay = RETRY_DELAY_MS * (MAX_RETRIES - retries + 1);
-    console.warn(`[GeminiService] Retrying after ${delay}ms … (${retries} attempts left)`);
+    const delay = delays[attempt - 1];
+    console.warn(`[GeminiService] Retry Attempt ${attempt} ... Waiting ${delay}ms`);
     await new Promise(resolve => setTimeout(resolve, delay));
-    return withRetry(fn, retries - 1);
+    return withRetry(fn, attempt + 1);
   }
 }
 
@@ -130,6 +144,10 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
   const langName = LANGUAGE_MAP[language] || 'English';
 
   return withRetry(async () => {
+    console.log(`[GeminiService] OCR Start`);
+    console.log(`[GeminiService] Analysis Start - Vision Model`);
+    console.log(`[GeminiService] Gemini Request Start`);
+    const startTime = Date.now();
     // Gemini multimodal call: combine system instruction + user text + image part
     const response = await genai.models.generateContent({
       model: GEMINI_MODEL,
@@ -159,6 +177,10 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
       }
     });
 
+    const elapsed = Date.now() - startTime;
+    console.log(`[GeminiService] OCR Complete`);
+    console.log(`[GeminiService] Analysis Complete in ${elapsed}ms`);
+
     const rawText = response.candidates[0].content.parts[0].text;
     return parseGeminiJson(rawText);
   });
@@ -178,6 +200,9 @@ async function analyzeReportFromText(text, language = 'en') {
   const langName = LANGUAGE_MAP[language] || 'English';
 
   return withRetry(async () => {
+    console.log(`[GeminiService] Analysis Start - Text Model`);
+    console.log(`[GeminiService] Gemini Request Start`);
+    const startTime = Date.now();
     const response = await genai.models.generateContent({
       model: GEMINI_MODEL,
       contents: [
@@ -196,6 +221,9 @@ async function analyzeReportFromText(text, language = 'en') {
         temperature: 0.1
       }
     });
+
+    const elapsed = Date.now() - startTime;
+    console.log(`[GeminiService] Analysis Complete in ${elapsed}ms`);
 
     const rawText = response.candidates[0].content.parts[0].text;
     return parseGeminiJson(rawText);

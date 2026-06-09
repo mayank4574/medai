@@ -17,24 +17,31 @@ router.post('/analyze', protect, upload.single('report'), async (req, res) => {
     let analysis;
     const language = req.body.language || user.language || 'en';
     const familyMember = req.body.familyMember || 'Self';
+    let isFallback = false;
 
-    if (req.file) {
-      const base64 = req.file.buffer.toString('base64');
-      const mimeType = req.file.mimetype;
-
-      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-        analysis = getDemoAnalysis(language);
-      } else {
-        analysis = await analyzeReportWithVision(base64, mimeType, language);
-      }
-    } else if (req.body.reportText) {
-      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-        analysis = getDemoAnalysis(language);
-      } else {
-        analysis = await analyzeReportFromText(req.body.reportText, language);
-      }
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+      analysis = getDemoAnalysis(language);
+      isFallback = true;
     } else {
-      return res.status(400).json({ message: 'Please upload a report image or provide report text' });
+      try {
+        if (req.file) {
+          const base64 = req.file.buffer.toString('base64');
+          const mimeType = req.file.mimetype;
+          analysis = await analyzeReportWithVision(base64, mimeType, language);
+        } else if (req.body.reportText) {
+          analysis = await analyzeReportFromText(req.body.reportText, language);
+        } else {
+          return res.status(400).json({ message: 'Please upload a report image or provide report text' });
+        }
+      } catch (apiError) {
+        if (apiError.isFallbackable) {
+          console.log(`[GeminiService] Fallback Triggered due to API error: ${apiError.status}`);
+          analysis = getDemoAnalysis(language);
+          isFallback = true;
+        } else {
+          throw apiError; // Throw actual config or validation errors
+        }
+      }
     }
 
     const report = await Report.create({
@@ -48,7 +55,9 @@ router.post('/analyze', protect, upload.single('report'), async (req, res) => {
       summary: analysis.summary,
       summaryLanguage: language,
       overallStatus: analysis.overallStatus,
-      doctorRecommendation: analysis.doctorRecommendation
+      doctorRecommendation: analysis.doctorRecommendation,
+      aiModel: isFallback ? 'gemini-2.5-flash-fallback' : 'gemini-2.5-flash',
+      analysisSource: isFallback ? 'fallback' : 'api'
     });
 
     // Increment monthly counter

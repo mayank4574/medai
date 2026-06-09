@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
@@ -31,7 +32,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({
       _id: user._id, name: user.name, email: user.email,
-      language: user.language, plan: user.plan, token: realToken
+      language: user.language, plan: user.plan, avatar: user.avatar, token: realToken
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -55,7 +56,7 @@ router.post('/login', async (req, res) => {
 
       res.json({
         _id: user._id, name: user.name, email: user.email,
-        language: user.language, plan: user.plan, token: token
+        language: user.language, plan: user.plan, avatar: user.avatar, token: token
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
@@ -96,6 +97,9 @@ router.put('/profile', protect, upload.single('avatar'), async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: 'User not found' });
     
+    console.log('[DEBUG /profile] req.body:', req.body);
+    console.log('[DEBUG /profile] req.file:', req.file ? 'Present' : 'None');
+
     // Check if updating password requires current password
     if (req.body.newPassword) {
       if (!req.body.currentPassword) {
@@ -109,6 +113,7 @@ router.put('/profile', protect, upload.single('avatar'), async (req, res) => {
         return res.status(400).json({ message: 'New password must be at least 8 characters' });
       }
       user.password = req.body.newPassword;
+      console.log(`[SECURITY] User ${user.email} successfully updated their password.`);
     }
 
     user.name = req.body.name || user.name;
@@ -118,11 +123,18 @@ router.put('/profile', protect, upload.single('avatar'), async (req, res) => {
     user.bio = req.body.bio !== undefined ? req.body.bio : user.bio;
     
     if (req.file) {
+      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        return res.status(500).json({ message: 'Cloudinary is not configured' });
+      }
       try {
         const result = await uploadImageToCloudinary(req.file.buffer);
         user.avatar = result.secure_url;
       } catch (uploadError) {
-        return res.status(500).json({ message: 'Failed to upload image to Cloudinary.' });
+        console.error('[Cloudinary Upload Error]:', uploadError);
+        return res.status(500).json({ 
+          message: 'Failed to upload image to Cloudinary.', 
+          details: uploadError.message || 'Unknown Cloudinary Error'
+        });
       }
     }
 
@@ -134,6 +146,7 @@ router.put('/profile', protect, upload.single('avatar'), async (req, res) => {
       isTwoFactorEnabled: updated.isTwoFactorEnabled
     });
   } catch (error) {
+    console.error('[CRITICAL] /profile Error:', error);
     if (error.code === 11000) {
       return res.status(400).json({ message: 'Email is already in use' });
     }

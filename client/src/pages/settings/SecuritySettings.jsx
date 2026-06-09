@@ -65,8 +65,11 @@ export default function SecuritySettings() {
 
     setUpdatingPassword(true);
     try {
-      // Assuming updateProfile handles password via backend if passed
-      await updateProfile({ password: newPassword });
+      // updateProfile now correctly sends currentPassword and newPassword
+      await updateProfile({ 
+        currentPassword: currentPassword, 
+        newPassword: newPassword 
+      });
       toast.success('Password updated successfully');
       setCurrentPassword('');
       setNewPassword('');
