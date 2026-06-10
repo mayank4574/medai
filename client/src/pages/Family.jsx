@@ -3,6 +3,7 @@ import { Users, Plus, UserPlus, FileText, ChevronRight, Activity, Calendar, Shie
 import { getFamilyMembers } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { getAvatarUrl } from '../utils/avatar';
 
 export default function Family() {
   const { user } = useAuth();
@@ -72,7 +73,7 @@ export default function Family() {
 
   // Self is always the first virtual member for UI purposes
   const allProfiles = [
-    { name: 'Self', relation: 'Self', age: '-', gender: '-', isSelf: true, alias: user?.name },
+    { name: 'Self', relation: 'Self', age: '-', gender: '-', isSelf: true, alias: user?.name, avatar: user?.avatar },
     ...members
   ];
 
@@ -180,8 +181,9 @@ export default function Family() {
             <div className="px-6 pb-6 relative">
               <div className="flex justify-between items-end -mt-10 mb-4">
                 <img 
-                  src={`https://ui-avatars.com/api/?name=${member.alias || member.name}&background=random&size=128`} 
+                  src={getAvatarUrl({ name: member.alias || member.name, avatar: member.avatar })} 
                   alt={member.name}
+                  onError={(e) => { e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(member.alias || member.name) + "&background=random&size=128"; }}
                   className="w-20 h-20 rounded-2xl border-4 border-white shadow-sm object-cover bg-white"
                 />
                 <span className="bg-blue-50 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-100">

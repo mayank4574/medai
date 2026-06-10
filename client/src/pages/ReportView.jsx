@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Share2, Download, ClipboardList, Info, ChevronRight, Stethoscope, Clock, ShieldCheck, Activity, ArrowLeft, Trash2, Loader2 } from 'lucide-react';
+import { Share2, Download, ClipboardList, Info, ChevronRight, Stethoscope, Clock, ShieldCheck, Activity, ArrowLeft, Trash2, Loader2, AlertTriangle, Search, CheckCircle } from 'lucide-react';
 import { getReport, deleteReport } from '../services/api';
 import ParameterTooltip from '../components/ParameterTooltip';
 
@@ -194,9 +194,120 @@ export default function ReportView() {
             );
           })}
 
-          {/* Doctor's Recommendation */}
-          {report.doctorRecommendation && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          {/* Clinical Guidance / Doctor's Recommendation */}
+          {report.clinicalGuidance ? (
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                  <Stethoscope size={24} className="text-primary" /> Clinical Guidance
+                </h3>
+                {report.clinicalGuidance.urgencyLevel && (
+                  <span className={`px-3 py-1 text-xs font-bold uppercase rounded-full ${
+                    report.clinicalGuidance.urgencyLevel === 'Urgent Review' ? 'bg-red-100 text-red-700' :
+                    report.clinicalGuidance.urgencyLevel === 'Consult Doctor' ? 'bg-orange-100 text-orange-700' :
+                    report.clinicalGuidance.urgencyLevel === 'Monitor' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-green-100 text-green-700'
+                  }`}>
+                    {report.clinicalGuidance.urgencyLevel}
+                  </span>
+                )}
+              </div>
+
+              {/* Key Findings */}
+              {report.clinicalGuidance.findings && report.clinicalGuidance.findings.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Key Findings</h4>
+                  <div className="overflow-hidden rounded-lg border border-slate-200 overflow-x-auto">
+                    <table className="w-full text-left text-sm min-w-[500px]">
+                      <thead className="bg-slate-50 text-slate-500">
+                        <tr>
+                          <th className="px-4 py-2 font-medium">Parameter</th>
+                          <th className="px-4 py-2 font-medium">Value</th>
+                          <th className="px-4 py-2 font-medium">Range</th>
+                          <th className="px-4 py-2 font-medium">Severity</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {report.clinicalGuidance.findings.map((finding, idx) => (
+                          <tr key={idx}>
+                            <td className="px-4 py-3 font-medium text-slate-900">{finding.name}</td>
+                            <td className="px-4 py-3 font-bold text-slate-900">{finding.value} {finding.unit}</td>
+                            <td className="px-4 py-3 text-slate-500">{finding.referenceRange}</td>
+                            <td className="px-4 py-3">
+                              <span className={`text-xs font-bold uppercase ${finding.status === 'critical' ? 'text-red-600' : 'text-orange-500'}`}>
+                                {finding.status === 'critical' ? 'High' : 'Borderline'}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Health Concerns */}
+                {report.clinicalGuidance.concerns && report.clinicalGuidance.concerns.length > 0 && (
+                  <div className="bg-orange-50/50 rounded-xl p-5 border border-orange-100/50 h-full">
+                    <h4 className="text-sm font-bold text-orange-900 flex items-center gap-2 mb-3">
+                      <AlertTriangle size={16} className="text-orange-500" /> Possible Health Concerns
+                    </h4>
+                    <ul className="space-y-2">
+                      {report.clinicalGuidance.concerns.map((concern, idx) => (
+                        <li key={idx} className="text-sm text-orange-800 flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5 shrink-0" />
+                          <span className="leading-relaxed">{concern}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Next Steps */}
+                {report.clinicalGuidance.nextSteps && report.clinicalGuidance.nextSteps.length > 0 && (
+                  <div className="bg-blue-50/50 rounded-xl p-5 border border-blue-100/50 h-full">
+                    <h4 className="text-sm font-bold text-blue-900 flex items-center gap-2 mb-3">
+                      <CheckCircle size={16} className="text-blue-500" /> Recommended Next Steps
+                    </h4>
+                    <ul className="space-y-2">
+                      {report.clinicalGuidance.nextSteps.map((step, idx) => (
+                        <li key={idx} className="text-sm text-blue-800 flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0" />
+                          <span className="leading-relaxed">{step}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Recommended Specialist & Action */}
+              {report.clinicalGuidance.specialistType && (
+                <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Recommended Specialist</p>
+                    <p className="text-lg font-bold text-slate-900">{report.clinicalGuidance.specialistType}</p>
+                  </div>
+                  <button 
+                    onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(report.clinicalGuidance.specialistType)}+near+me`, '_blank')}
+                    className="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    <Search size={16} /> Find Nearby Doctors
+                  </button>
+                </div>
+              )}
+
+              {/* Disclaimer */}
+              {report.clinicalGuidance.disclaimer && (
+                <div className="text-xs text-slate-400 leading-relaxed border-t border-slate-100 pt-4 flex items-start gap-2">
+                  <Info size={14} className="shrink-0 mt-0.5" />
+                  <p>{report.clinicalGuidance.disclaimer}</p>
+                </div>
+              )}
+            </div>
+          ) : report.doctorRecommendation ? (
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-6">
               <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <ClipboardList size={20} className="text-primary" /> Doctor's Recommendation
               </h3>
@@ -204,7 +315,7 @@ export default function ReportView() {
                 <p className="text-sm text-slate-700 leading-relaxed">{report.doctorRecommendation}</p>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Right Sidebar */}

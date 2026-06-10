@@ -28,6 +28,20 @@ const reportSchema = new mongoose.Schema({
   summaryLanguage: { type: String, default: 'en' },
   overallStatus: { type: String, enum: ['normal', 'attention', 'urgent'], default: 'normal' },
   doctorRecommendation: { type: String },
+  clinicalGuidance: {
+    findings: [{
+      name: String,
+      value: mongoose.Schema.Types.Mixed,
+      unit: String,
+      referenceRange: String,
+      status: String
+    }],
+    concerns: [{ type: String }],
+    nextSteps: [{ type: String }],
+    specialistType: { type: String },
+    urgencyLevel: { type: String, enum: ['Normal', 'Monitor', 'Consult Doctor', 'Urgent Review'] },
+    disclaimer: { type: String }
+  },
   aiModel: { type: String, default: 'gemini-2.5-flash' },
   analysisSource: { type: String, enum: ['api', 'fallback'], default: 'api' }
 }, { timestamps: true });

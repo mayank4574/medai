@@ -44,6 +44,7 @@ IMPORTANT RULES:
 2. For each value, determine: name, numeric value, unit, reference range (min/max), status
 3. Status must be one of: "normal" (within range), "borderline" (within 10% of boundary), "critical" (outside range significantly)
 4. Categorize each value: CBC, Liver, Kidney, Thyroid, Lipid, Diabetes, Vitamin, Other
+5. Do NOT generate: medicines, dosages, prescriptions, treatment plans, medical diagnoses, real doctor names, or fake doctor data.
 
 Return ONLY valid JSON in this exact format:
 {
@@ -64,12 +65,40 @@ Return ONLY valid JSON in this exact format:
   ],
   "summary": "Overall summary in target language",
   "overallStatus": "normal|attention|urgent",
-  "doctorRecommendation": "Recommendation in target language"
+  "concerns": ["List of general health concerns in target language (informational only)"],
+  "nextSteps": ["List of lifestyle, diet, and monitoring steps in target language"]
 }`;
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
 const { generateExplanation } = require('./explanationEngine');
+
+/**
+ * Programmatically calculate Urgency Level based on rules.
+ */
+function calculateUrgency(abnormalCount, criticalCount) {
+  if (abnormalCount === 0) return 'Normal';
+  if (criticalCount > 0) return 'Urgent Review';
+  if (abnormalCount > 1) return 'Consult Doctor';
+  return 'Monitor';
+}
+
+/**
+ * Programmatically map Specialist Type based on categories of abnormal markers.
+ */
+function determineSpecialist(abnormalValues) {
+  if (abnormalValues.length === 0) return 'General Physician';
+  
+  const categories = abnormalValues.map(v => (v.category || '').toLowerCase());
+  
+  if (categories.includes('kidney')) return 'Nephrologist';
+  if (categories.includes('liver')) return 'Gastroenterologist / Hepatologist';
+  if (categories.includes('lipid') || categories.includes('cardiovascular')) return 'Cardiologist';
+  if (categories.includes('diabetes') || categories.includes('thyroid')) return 'Endocrinologist';
+  if (categories.includes('cbc') || categories.includes('blood')) return 'Hematologist';
+  
+  return 'General Physician';
+}
 
 /**
  * Strips markdown code fences from a Gemini response and parses it as JSON.
@@ -88,6 +117,37 @@ function parseGeminiJson(rawText) {
       ...val,
       explanation: generateExplanation(val)
     }));
+    
+    // Build Clinical Guidance programmatically
+    const abnormalValues = parsed.labValues.filter(v => v.status === 'borderline' || v.status === 'critical');
+    const criticalCount = parsed.labValues.filter(v => v.status === 'critical').length;
+    const abnormalCount = abnormalValues.length;
+    
+    const findings = abnormalValues.map(v => ({
+      name: v.name,
+      value: v.value,
+      unit: v.unit || '',
+      referenceRange: (v.referenceMin !== undefined && v.referenceMax !== undefined) ? `${v.referenceMin} - ${v.referenceMax}` : '',
+      status: v.status
+    }));
+
+    const urgencyLevel = calculateUrgency(abnormalCount, criticalCount);
+    const specialistType = determineSpecialist(abnormalValues);
+    
+    parsed.clinicalGuidance = {
+      findings: findings,
+      concerns: parsed.concerns || [],
+      nextSteps: parsed.nextSteps || [],
+      specialistType: specialistType,
+      urgencyLevel: urgencyLevel,
+      disclaimer: "This interpretation is for educational purposes only and is not a medical diagnosis, prescription, or treatment plan. Please consult a qualified healthcare professional for medical advice."
+    };
+    
+    // Clean up temporary fields
+    delete parsed.concerns;
+    delete parsed.nextSteps;
+    // We can also delete doctorRecommendation or keep it empty
+    parsed.doctorRecommendation = null;
   }
   
   return parsed;
