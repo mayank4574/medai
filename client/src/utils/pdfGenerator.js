@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 // Helper to format dates
 const formatDate = (dateString) => {
@@ -148,7 +148,7 @@ export const generateReportPDF = async (report, user) => {
       val.explanation || '-'
     ]);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: cursorY,
       head: [['Parameter', 'Value', 'Unit', 'Ref. Range', 'Status', 'Explanation']],
       body: tableData,
