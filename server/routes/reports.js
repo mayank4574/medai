@@ -1,5 +1,6 @@
 const express = require('express');
 const Report = require('../models/Report');
+const Notification = require('../models/Notification');
 const { protect } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const { analyzeReportWithVision, analyzeReportFromText, getDemoAnalysis } = require('../services/aiService');
@@ -59,6 +60,29 @@ router.post('/analyze', protect, upload.single('report'), async (req, res) => {
       aiModel: isFallback ? 'gemini-2.5-flash-fallback' : 'gemini-2.5-flash',
       analysisSource: isFallback ? 'fallback' : 'api'
     });
+
+    // Check if a notification already exists for this report to prevent duplicates
+    const existingNotif = await Notification.findOne({ reportId: report._id });
+    if (!existingNotif) {
+      // Determine notification type
+      let type = 'success';
+      if (report.overallStatus === 'attention') type = 'warning';
+      if (report.overallStatus === 'urgent') type = 'urgent';
+
+      const capitalizedType = report.reportType.charAt(0).toUpperCase() + report.reportType.slice(1);
+      const title = `${capitalizedType} Report Analysis Completed`;
+      let message = 'All values are within normal range.';
+      if (type === 'warning') message = 'Some values need your attention.';
+      if (type === 'urgent') message = 'Critical values detected. Consult a doctor.';
+
+      await Notification.create({
+        user: user._id,
+        reportId: report._id,
+        title,
+        message,
+        type
+      });
+    }
 
     // Increment monthly counter
     await require('../models/User').findByIdAndUpdate(user._id, { $inc: { reportsThisMonth: 1 } });

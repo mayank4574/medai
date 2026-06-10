@@ -42,7 +42,7 @@ export default function Auth() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-['Inter']">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex justify-center items-center gap-2 cursor-pointer group">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0ea5e9] to-[#2563eb] flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-light to-[#2563eb] flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
             <Scan size={24} />
           </div>
         </Link>
@@ -68,7 +68,7 @@ export default function Auth() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your full name"
-                    className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#005a8d] focus:border-[#005a8d] sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                   />
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default function Auth() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#005a8d] focus:border-[#005a8d] sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 />
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function Auth() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#005a8d] focus:border-[#005a8d] sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 />
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function Auth() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#005a8d] hover:bg-[#004a75] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#005a8d] disabled:opacity-50 cursor-pointer transition-all"
+                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 cursor-pointer transition-all"
               >
                 {loading ? <><Loader2 size={16} className="animate-spin" /> Please wait...</> : (isLogin ? 'Sign in' : 'Sign up')}
               </button>

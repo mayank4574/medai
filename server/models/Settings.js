@@ -8,8 +8,8 @@ const settingsSchema = new mongoose.Schema({
     unique: true
   },
   appearance: {
-    theme: { type: String, default: 'light', enum: ['light', 'dark', 'auto'] },
-    accentColor: { type: String, default: 'blue', enum: ['blue', 'green', 'orange', 'purple', 'red'] },
+    theme: { type: String, default: 'light', enum: ['light', 'dark', 'system', 'auto'] },
+    accentColor: { type: String, default: 'blue', enum: ['blue', 'green', 'orange', 'purple', 'red', 'gray'] },
     fontSize: { type: String, default: 'medium', enum: ['small', 'medium', 'large'] },
     layout: { type: String, default: 'comfortable', enum: ['comfortable', 'compact'] }
   },

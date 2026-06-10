@@ -71,7 +71,7 @@ export default function ReportAnalysis() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 size={32} className="text-[#005a8d] animate-spin" />
+        <Loader2 size={32} className="text-primary animate-spin" />
         <p className="text-slate-500 font-medium">Loading reports...</p>
       </div>
     );
@@ -88,7 +88,7 @@ export default function ReportAnalysis() {
         </div>
         <Link 
           to="/upload"
-          className="flex items-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg"
+          className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg"
         >
           + Upload New Report
         </Link>
@@ -103,7 +103,7 @@ export default function ReportAnalysis() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search reports by type, lab name, or member..."
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005a8d] focus:bg-white transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all"
           />
         </div>
         <div className="flex gap-2">
@@ -113,7 +113,7 @@ export default function ReportAnalysis() {
               onClick={() => setFilterStatus(status)}
               className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all cursor-pointer ${
                 filterStatus === status
-                  ? 'bg-[#005a8d] text-white'
+                  ? 'bg-primary text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -140,7 +140,7 @@ export default function ReportAnalysis() {
           {reports.length === 0 && (
             <Link 
               to="/upload"
-              className="inline-flex items-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white px-6 py-3 rounded-lg text-sm font-medium transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg text-sm font-medium transition-all cursor-pointer"
             >
               Upload Your First Report
             </Link>
@@ -203,7 +203,7 @@ export default function ReportAnalysis() {
                     >
                       <Trash2 size={16} />
                     </button>
-                    <ChevronRight size={18} className="text-slate-400 group-hover:text-[#005a8d] group-hover:translate-x-1 transition-all" />
+                    <ChevronRight size={18} className="text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </Link>

@@ -1,49 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, Check, Loader2, Sun, Moon as MoonIcon, Monitor } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { updateAppearance } from '../../services/api';
-import toast, { Toaster } from 'react-hot-toast';
+import { useTheme } from '../../context/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
 export default function AppearanceSettings() {
-  const { settings, updateSettingsState } = useAuth();
+  const { appearance, updateAppearancePreview, saveAppearanceSettings } = useTheme();
   const [saving, setSaving] = useState(false);
 
-  const [theme, setTheme] = useState('light');
-  const [accentColor, setAccentColor] = useState('blue');
-  const [fontSize, setFontSize] = useState('medium');
-  const [layout, setLayout] = useState('comfortable');
+  const { theme, accentColor, fontSize, layout } = appearance;
 
-  useEffect(() => {
-    if (settings?.appearance) {
-      setTheme(settings.appearance.theme || 'light');
-      setAccentColor(settings.appearance.accentColor || 'blue');
-      setFontSize(settings.appearance.fontSize || 'medium');
-      setLayout(settings.appearance.layout || 'comfortable');
-    }
-  }, [settings]);
+  const handleUpdate = (field, value) => {
+    updateAppearancePreview({ [field]: value });
+  };
 
   const handleSave = async () => {
     setSaving(true);
-    try {
-      const payload = { theme, accentColor, fontSize, layout };
-      const res = await updateAppearance(payload);
-      updateSettingsState(res.data);
-      toast.success('Appearance settings saved');
-    } catch (err) {
-      toast.error('Failed to save appearance');
-    } finally {
-      setSaving(false);
-    }
+    await saveAppearanceSettings();
+    setSaving(false);
   };
 
   const colors = [
-    { id: 'blue', code: 'bg-[#4361ee]' },
+    { id: 'blue', code: 'bg-[#005a8d]' },
     { id: 'purple', code: 'bg-[#7209b7]' },
     { id: 'green', code: 'bg-[#06d6a0]' },
     { id: 'orange', code: 'bg-[#f77f00]' },
     { id: 'red', code: 'bg-[#e63946]' },
-    { id: 'slate', code: 'bg-[#64748b]' },
+    { id: 'gray', code: 'bg-[#475569]' },
   ];
 
   return (
@@ -61,26 +44,36 @@ export default function AppearanceSettings() {
         {/* Theme */}
         <div>
           <h2 className="text-sm font-bold text-slate-900 mb-3 px-2">Theme</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <button
-              onClick={() => setTheme('light')}
-              className={`flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 transition-all cursor-pointer ${
-                theme === 'light' ? 'border-[#005a8d] bg-blue-50/50 text-[#005a8d]' : 'border-slate-200 bg-white text-slate-500 hover:border-[#005a8d]/50'
+              onClick={() => handleUpdate('theme', 'light')}
+              className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                theme === 'light' ? 'border-primary bg-primary/10 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-primary/50'
               }`}
             >
-              <Sun size={32} />
-              <span className="font-bold text-sm">Light</span>
-              {theme === 'light' && <div className="absolute top-3 right-3 w-5 h-5 bg-[#005a8d] rounded-full flex items-center justify-center"><Check size={12} className="text-white" /></div>}
+              <Sun size={24} />
+              <span className="font-bold text-xs">Light</span>
+              {theme === 'light' && <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center"><Check size={10} className="text-white" /></div>}
             </button>
             <button
-              onClick={() => setTheme('dark')}
-              className={`flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 transition-all cursor-pointer ${
-                theme === 'dark' ? 'border-[#005a8d] bg-blue-50/50 text-[#005a8d]' : 'border-slate-200 bg-white text-slate-500 hover:border-[#005a8d]/50'
+              onClick={() => handleUpdate('theme', 'dark')}
+              className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                theme === 'dark' ? 'border-primary bg-primary/10 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-primary/50'
               }`}
             >
-              <MoonIcon size={32} />
-              <span className="font-bold text-sm">Dark</span>
-              {theme === 'dark' && <div className="absolute top-3 right-3 w-5 h-5 bg-[#005a8d] rounded-full flex items-center justify-center"><Check size={12} className="text-white" /></div>}
+              <MoonIcon size={24} />
+              <span className="font-bold text-xs">Dark</span>
+              {theme === 'dark' && <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+            </button>
+            <button
+              onClick={() => handleUpdate('theme', 'system')}
+              className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                theme === 'system' ? 'border-primary bg-primary/10 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-primary/50'
+              }`}
+            >
+              <Monitor size={24} />
+              <span className="font-bold text-xs">System</span>
+              {theme === 'system' && <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center"><Check size={10} className="text-white" /></div>}
             </button>
           </div>
         </div>
@@ -92,9 +85,9 @@ export default function AppearanceSettings() {
             {colors.map(color => (
               <button
                 key={color.id}
-                onClick={() => setAccentColor(color.id)}
+                onClick={() => handleUpdate('accentColor', color.id)}
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform ${color.code} ${
-                  accentColor === color.id ? 'ring-4 ring-offset-2 ring-[#005a8d]/30 scale-110' : 'hover:scale-110'
+                  accentColor === color.id ? 'ring-4 ring-offset-2 ring-primary/30 scale-110' : 'hover:scale-110'
                 }`}
               >
                 {accentColor === color.id && <Check size={16} className="text-white" />}
@@ -110,9 +103,9 @@ export default function AppearanceSettings() {
             {['small', 'medium', 'large'].map(size => (
               <button
                 key={size}
-                onClick={() => setFontSize(size)}
-                className={`flex-1 py-3 text-sm font-bold capitalize rounded-xl transition-colors ${
-                  fontSize === size ? 'bg-[#005a8d] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
+                onClick={() => handleUpdate('fontSize', size)}
+                className={`flex-1 py-3 text-sm font-bold capitalize rounded-xl transition-colors cursor-pointer ${
+                  fontSize === size ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 {size === 'small' ? 'A-' : size === 'medium' ? 'Medium' : 'A+'}
@@ -131,11 +124,11 @@ export default function AppearanceSettings() {
             ].map(l => (
               <button
                 key={l.id}
-                onClick={() => setLayout(l.id)}
+                onClick={() => handleUpdate('layout', l.id)}
                 className="w-full flex items-center gap-4 p-5 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0 cursor-pointer text-left"
               >
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${layout === l.id ? 'border-[#005a8d]' : 'border-slate-300'}`}>
-                  {layout === l.id && <div className="w-2.5 h-2.5 rounded-full bg-[#005a8d]" />}
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${layout === l.id ? 'border-primary' : 'border-slate-300'}`}>
+                  {layout === l.id && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{l.title}</p>
@@ -149,10 +142,10 @@ export default function AppearanceSettings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer mt-4"
+          className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer mt-4"
         >
           {saving && <Loader2 size={18} className="animate-spin" />}
-          {saving ? 'Saving...' : 'Save'}
+          {saving ? 'Saving...' : 'Save Settings'}
         </button>
       </div>
     </div>

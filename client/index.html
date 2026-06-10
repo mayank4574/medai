@@ -9,6 +9,44 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      try {
+        const stored = localStorage.getItem('medscan_appearance');
+        if (stored) {
+          const settings = JSON.parse(stored);
+          const root = document.documentElement;
+          
+          const isDark = settings.theme === 'dark' || (settings.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) root.classList.add('dark');
+          else root.classList.remove('dark');
+
+          const colors = {
+            blue: { p: '#005a8d', h: '#004a75', l: '#0ea5e9' },
+            purple: { p: '#7209b7', h: '#560bad', l: '#b5179e' },
+            green: { p: '#06d6a0', h: '#05b88a', l: '#2d6a4f' },
+            orange: { p: '#f77f00', h: '#d66c00', l: '#fcbf49' },
+            red: { p: '#e63946', h: '#c1121f', l: '#ffb4a2' },
+            gray: { p: '#475569', h: '#334155', l: '#94a3b8' }
+          };
+          
+          if (settings.accentColor && colors[settings.accentColor]) {
+            const c = colors[settings.accentColor];
+            root.style.setProperty('--primary', c.p);
+            root.style.setProperty('--primary-hover', c.h);
+            root.style.setProperty('--primary-light', c.l);
+          }
+          
+          if (settings.layout === 'compact') root.style.setProperty('--spacing-scale', '0.2rem');
+          else root.style.setProperty('--spacing-scale', '0.25rem');
+          
+          if (settings.fontSize === 'small') root.style.fontSize = '14px';
+          else if (settings.fontSize === 'large') root.style.fontSize = '18px';
+          else root.style.fontSize = '16px';
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
 <body>

@@ -64,7 +64,7 @@ export default function Family() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 size={32} className="text-[#005a8d] animate-spin" />
+        <Loader2 size={32} className="text-primary animate-spin" />
         <p className="text-slate-500 font-medium">Loading Family Profiles...</p>
       </div>
     );
@@ -87,7 +87,7 @@ export default function Family() {
         </div>
         <button 
           onClick={() => setIsAdding(!isAdding)}
-          className="flex items-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-blue-900/20 active:scale-95 cursor-pointer"
+          className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-blue-900/20 active:scale-95 cursor-pointer"
         >
           {isAdding ? <Users size={18} /> : <UserPlus size={18} />}
           {isAdding ? 'Cancel' : 'Add Member'}
@@ -97,7 +97,7 @@ export default function Family() {
       {isAdding && (
         <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 mb-8 shadow-sm">
           <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <Plus className="text-[#005a8d]" /> Add New Family Member
+            <Plus className="text-primary" /> Add New Family Member
           </h3>
           <form onSubmit={handleAddMember} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -107,7 +107,7 @@ export default function Family() {
                 required
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-[#005a8d] focus:border-[#005a8d] p-3 outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-primary p-3 outline-none transition-all"
                 placeholder="e.g., Aarti Sharma"
               />
             </div>
@@ -117,7 +117,7 @@ export default function Family() {
                 required
                 value={formData.relation}
                 onChange={e => setFormData({...formData, relation: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-[#005a8d] focus:border-[#005a8d] p-3 outline-none transition-all cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-primary p-3 outline-none transition-all cursor-pointer"
               >
                 <option value="">Select relation...</option>
                 <option value="Mother">Mother</option>
@@ -141,7 +141,7 @@ export default function Family() {
                 max="120"
                 value={formData.age}
                 onChange={e => setFormData({...formData, age: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-[#005a8d] focus:border-[#005a8d] p-3 outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-primary p-3 outline-none transition-all"
                 placeholder="e.g., 45"
               />
             </div>
@@ -150,7 +150,7 @@ export default function Family() {
               <select 
                 value={formData.gender}
                 onChange={e => setFormData({...formData, gender: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-[#005a8d] focus:border-[#005a8d] p-3 outline-none transition-all cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-primary p-3 outline-none transition-all cursor-pointer"
               >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -161,7 +161,7 @@ export default function Family() {
               <button 
                 type="submit" 
                 disabled={saving}
-                className="bg-[#005a8d] hover:bg-[#004a75] text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                className="bg-primary hover:bg-primary-hover text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center gap-2"
               >
                 {saving ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : 'Save Profile'}
               </button>
@@ -184,7 +184,7 @@ export default function Family() {
                   alt={member.name}
                   className="w-20 h-20 rounded-2xl border-4 border-white shadow-sm object-cover bg-white"
                 />
-                <span className="bg-blue-50 text-[#005a8d] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-100">
+                <span className="bg-blue-50 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-100">
                   {member.relation}
                 </span>
               </div>
@@ -198,14 +198,14 @@ export default function Family() {
               <div className="mt-6 space-y-3">
                 <Link 
                   to="/reports"
-                  className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-[#005a8d]/5 text-slate-700 hover:text-[#005a8d] transition-colors border border-slate-100 font-semibold text-sm group/btn cursor-pointer"
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-primary/5 text-slate-700 hover:text-primary transition-colors border border-slate-100 font-semibold text-sm group/btn cursor-pointer"
                 >
                   <span className="flex items-center gap-2"><FileText size={16}/> View Reports</span>
                   <ChevronRight size={16} className="text-slate-400 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/trends"
-                  className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-[#005a8d]/5 text-slate-700 hover:text-[#005a8d] transition-colors border border-slate-100 font-semibold text-sm group/btn cursor-pointer"
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-primary/5 text-slate-700 hover:text-primary transition-colors border border-slate-100 font-semibold text-sm group/btn cursor-pointer"
                 >
                   <span className="flex items-center gap-2"><Activity size={16}/> Health Trends</span>
                   <ChevronRight size={16} className="text-slate-400 group-hover/btn:translate-x-1 transition-transform" />

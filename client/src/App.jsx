@@ -9,7 +9,7 @@ import Trends from './pages/Trends';
 import Family from './pages/Family';
 import Auth from './pages/Auth';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeProvider';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Settings Pages
 import SettingsMenu from './pages/settings/SettingsMenu';

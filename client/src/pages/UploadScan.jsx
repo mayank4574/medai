@@ -179,7 +179,7 @@ export default function UploadScan() {
                     };
                     input.click();
                   }}
-                  className="flex items-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white px-6 py-3 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg"
+                  className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg"
                 >
                   <Camera size={18} /> Upload Camera
                 </button>
@@ -229,7 +229,7 @@ export default function UploadScan() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                  <Globe size={20} className="text-[#005a8d]" />
+                  <Globe size={20} className="text-primary" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900">Translation Language</h4>
@@ -284,7 +284,7 @@ export default function UploadScan() {
               <button 
                 onClick={handleProcess}
                 disabled={isProcessing}
-                className={`bg-[#005a8d] text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md hover:bg-[#004a75] disabled:opacity-50 transition-all cursor-pointer hover:shadow-lg active:scale-[0.98] ${isProcessing ? 'animate-pulse-glow' : ''}`}
+                className={`bg-primary text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md hover:bg-primary-hover disabled:opacity-50 transition-all cursor-pointer hover:shadow-lg active:scale-[0.98] ${isProcessing ? 'animate-pulse-glow' : ''}`}
               >
                 {isProcessing ? '⏳ Processing...' : '🔬 Start Analysis'}
               </button>
@@ -335,7 +335,7 @@ export default function UploadScan() {
             <div className="relative space-y-6 before:absolute before:inset-0 before:ml-3.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-slate-200">
               
               <div className="relative flex items-start gap-4">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 z-10 transition-all ${processStep >= 1 ? 'bg-[#005a8d] text-white scale-110' : 'bg-slate-100 text-slate-400'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 z-10 transition-all ${processStep >= 1 ? 'bg-primary text-white scale-110' : 'bg-slate-100 text-slate-400'}`}>
                   {processStep >= 1 ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                 </div>
                 <div>
@@ -350,12 +350,12 @@ export default function UploadScan() {
                 </div>
                 <div>
                   <h4 className={`text-sm font-bold ${processStep >= 2 ? 'text-slate-900' : 'text-slate-500'}`}>2. AI OCR Processing (Gemini 2.5 Flash Vision)</h4>
-                  <p className={`text-xs mt-1 ${processStep >= 2 ? 'text-[#005a8d] font-medium' : 'text-slate-400'}`}>Analyzing document structure...</p>
+                  <p className={`text-xs mt-1 ${processStep >= 2 ? 'text-primary font-medium' : 'text-slate-400'}`}>Analyzing document structure...</p>
                 </div>
               </div>
 
               <div className="relative flex items-start gap-4">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 z-10 transition-all ${processStep >= 3 ? 'bg-[#005a8d] text-white scale-110' : 'bg-slate-100 text-slate-400'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 z-10 transition-all ${processStep >= 3 ? 'bg-primary text-white scale-110' : 'bg-slate-100 text-slate-400'}`}>
                   {processStep >= 3 ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                 </div>
                 <div>
@@ -398,11 +398,11 @@ export default function UploadScan() {
           {/* Supported Languages Count */}
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <Globe size={18} className="text-[#005a8d]" />
+              <Globe size={18} className="text-primary" />
               <h4 className="text-sm font-bold text-slate-900">Multi-Language Support</h4>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed">
-              MedScanAI supports <span className="font-bold text-[#005a8d]">{LANGUAGES.length}+ languages</span> for report translation including Hindi, Japanese, Spanish, Arabic, Tamil, and more.
+              MedScanAI supports <span className="font-bold text-primary">{LANGUAGES.length}+ languages</span> for report translation including Hindi, Japanese, Spanish, Arabic, Tamil, and more.
             </p>
           </div>
         </div>

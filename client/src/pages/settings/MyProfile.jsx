@@ -98,7 +98,7 @@ export default function MyProfile() {
               alt="Profile"
               onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=random&size=128`; }}
             />
-            <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#005a8d] text-white rounded-full flex items-center justify-center shadow-md border-2 border-white">
+            <div className="absolute bottom-0 right-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center shadow-md border-2 border-white">
               <Camera size={14} />
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function MyProfile() {
             accept="image/*" 
             className="hidden" 
           />
-          <p onClick={() => fileInputRef.current?.click()} className="text-sm font-semibold text-[#005a8d] mt-3 hover:underline cursor-pointer">
+          <p onClick={() => fileInputRef.current?.click()} className="text-sm font-semibold text-primary mt-3 hover:underline cursor-pointer">
             Change Photo
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function MyProfile() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-primary transition-all"
               placeholder="Enter your full name"
             />
           </div>
@@ -133,7 +133,7 @@ export default function MyProfile() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-primary transition-all"
             />
           </div>
 
@@ -143,7 +143,7 @@ export default function MyProfile() {
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-primary transition-all"
               placeholder="+91 9876543210"
             />
           </div>
@@ -153,7 +153,7 @@ export default function MyProfile() {
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all resize-none h-24"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-primary transition-all resize-none h-24"
               placeholder="Tell us a little about yourself..."
             />
           </div>
@@ -162,7 +162,7 @@ export default function MyProfile() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 cursor-pointer"
             >
               {saving ? <Loader2 size={18} className="animate-spin" /> : saved ? <Check size={18} /> : null}
               {saving ? 'Saving...' : saved ? 'Saved Successfully' : 'Save Changes'}

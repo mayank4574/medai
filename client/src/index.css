@@ -2,6 +2,56 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary: var(--primary, #005a8d);
+  --color-primary-hover: var(--primary-hover, #004a75);
+  --color-primary-light: var(--primary-light, #0ea5e9);
+  
+  --spacing: var(--spacing-scale, 0.25rem);
+  
+  --color-white: var(--bg-card, #ffffff);
+  --color-slate-50: var(--bg-page, #f8fafc);
+  --color-slate-100: var(--bg-hover, #f1f5f9);
+  --color-slate-200: var(--border-color, #e2e8f0);
+  --color-slate-300: var(--border-hover, #cbd5e1);
+  --color-slate-400: var(--text-muted-light, #94a3b8);
+  --color-slate-500: var(--text-muted, #64748b);
+  --color-slate-600: var(--text-muted-dark, #475569);
+  --color-slate-700: var(--text-main-light, #334155);
+  --color-slate-800: var(--text-main, #1e293b);
+  --color-slate-900: var(--text-main-dark, #0f172a);
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/* Base defaults (Light mode) */
+:root {
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-hover: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --text-muted-light: #94a3b8;
+  --text-muted: #64748b;
+  --text-muted-dark: #475569;
+  --text-main-light: #334155;
+  --text-main: #1e293b;
+  --text-main-dark: #0f172a;
+}
+
+/* Dark mode overrides */
+.dark {
+  --bg-page: #020617; /* slate-950 */
+  --bg-card: #0f172a; /* slate-900 */
+  --bg-hover: #1e293b; /* slate-800 */
+  --border-color: #334155; /* slate-700 */
+  --border-hover: #475569; /* slate-600 */
+  --text-muted-light: #475569; /* slate-600 */
+  --text-muted: #94a3b8; /* slate-400 */
+  --text-muted-dark: #cbd5e1; /* slate-300 */
+  --text-main-light: #e2e8f0; /* slate-200 */
+  --text-main: #f1f5f9; /* slate-100 */
+  --text-main-dark: #f8fafc; /* slate-50 */
 }
 
 html {

@@ -32,7 +32,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 size={32} className="text-[#005a8d] animate-spin" />
+        <Loader2 size={32} className="text-primary animate-spin" />
         <p className="text-slate-500 font-medium">Loading dashboard...</p>
       </div>
     );
@@ -45,7 +45,7 @@ export default function Dashboard() {
     : 100;
   
   const pieData = [{ name: 'Health', value: healthScore }, { name: 'Remaining', value: 100 - healthScore }];
-  const pieColors = ['#005a8d', '#e2e8f0'];
+  const pieColors = ['var(--primary)', '#e2e8f0'];
 
   // Recent Scans
   const recentScans = reports.slice(0, 3);
@@ -101,7 +101,7 @@ export default function Dashboard() {
               : `Welcome to MedScanAI. Upload your first lab report to get started.`}
           </p>
         </div>
-        <Link to="/upload" className="flex items-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg">
+        <Link to="/upload" className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg">
           <FileUp size={16} />
           Start New Scan
         </Link>
@@ -151,13 +151,13 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl border-t-4 border-t-[#00a3e0] border-x border-b border-slate-200 p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-slate-900">Recent Scans</h3>
-            <Link to="/reports" className="text-xs font-semibold text-[#005a8d] hover:text-[#004a75] cursor-pointer">View All</Link>
+            <Link to="/reports" className="text-xs font-semibold text-primary hover:text-primary-hover cursor-pointer">View All</Link>
           </div>
           <div className="space-y-4 flex-1 overflow-y-auto">
             {recentScans.length === 0 ? (
               <div className="text-center text-sm text-slate-500 mt-10">
                 <p>No recent scans found.</p>
-                <Link to="/upload" className="text-[#005a8d] font-semibold text-xs mt-2 inline-block cursor-pointer">Upload your first report →</Link>
+                <Link to="/upload" className="text-primary font-semibold text-xs mt-2 inline-block cursor-pointer">Upload your first report →</Link>
               </div>
             ) : recentScans.map(scan => (
               <Link key={scan._id} to={`/reports/${scan._id}`} className="flex items-center gap-4 bg-slate-50 p-3 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer group">
@@ -209,7 +209,7 @@ export default function Dashboard() {
         <div className="lg:col-span-2">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-slate-900">Family Overview</h2>
-            <Link to="/family" className="text-sm font-medium text-[#005a8d] hover:text-[#004a75] flex items-center gap-1 cursor-pointer">
+            <Link to="/family" className="text-sm font-medium text-primary hover:text-primary-hover flex items-center gap-1 cursor-pointer">
               <Users size={16} /> Manage Group
             </Link>
           </div>
@@ -231,7 +231,7 @@ export default function Dashboard() {
                       {info.color === 'green' ? <CheckCircle2 size={14} /> : (info.color !== 'gray' ? <AlertCircle size={14} /> : <Info size={14} />)}
                       {info.status}
                     </div>
-                    <Link to="/reports" className="text-xs font-medium text-[#005a8d] hover:underline cursor-pointer">Details</Link>
+                    <Link to="/reports" className="text-xs font-medium text-primary hover:underline cursor-pointer">Details</Link>
                   </div>
                 </div>
               );
@@ -258,7 +258,7 @@ export default function Dashboard() {
                   <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                   <Bar dataKey="value" radius={[2, 2, 0, 0]}>
                     {barData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index === barData.length - 1 ? '#005a8d' : '#e2e8f0'} />
+                      <Cell key={`cell-${index}`} fill={index === barData.length - 1 ? 'var(--primary)' : '#e2e8f0'} />
                     ))}
                   </Bar>
                 </BarChart>

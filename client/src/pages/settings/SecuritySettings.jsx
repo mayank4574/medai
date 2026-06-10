@@ -131,7 +131,7 @@ export default function SecuritySettings() {
     <button 
       onClick={onClick}
       disabled={toggling2FA}
-      className={`w-12 h-7 rounded-full transition-colors relative cursor-pointer disabled:opacity-50 ${enabled ? 'bg-[#005a8d]' : 'bg-slate-200'}`}
+      className={`w-12 h-7 rounded-full transition-colors relative cursor-pointer disabled:opacity-50 ${enabled ? 'bg-primary' : 'bg-slate-200'}`}
     >
       <div className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-transform shadow-sm ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
     </button>
@@ -162,7 +162,7 @@ export default function SecuritySettings() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 pr-10 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 pr-10 outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                   {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -178,7 +178,7 @@ export default function SecuritySettings() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 pr-10 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 pr-10 outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                   {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -194,7 +194,7 @@ export default function SecuritySettings() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 pr-10 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 pr-10 outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                   {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -205,7 +205,7 @@ export default function SecuritySettings() {
             <button
               type="submit"
               disabled={updatingPassword || !currentPassword || !newPassword || !confirmPassword}
-              className="w-full mt-2 flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
+              className="w-full mt-2 flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
             >
               {updatingPassword && <Loader2 size={18} className="animate-spin" />}
               {updatingPassword ? 'Updating...' : 'Update Password'}
@@ -238,8 +238,8 @@ export default function SecuritySettings() {
           </div>
 
           {showOtpInput && !is2FAEnabled && (
-            <div className="mt-4 p-4 border border-[#005a8d]/20 bg-blue-50 rounded-xl animate-in fade-in slide-in-from-top-2">
-              <p className="text-xs text-[#005a8d] font-semibold mb-3">Check your server console for the simulated OTP code.</p>
+            <div className="mt-4 p-4 border border-primary/20 bg-blue-50 rounded-xl animate-in fade-in slide-in-from-top-2">
+              <p className="text-xs text-primary font-semibold mb-3">Check your server console for the simulated OTP code.</p>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -247,12 +247,12 @@ export default function SecuritySettings() {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                   placeholder="Enter 6-digit OTP"
-                  className="flex-1 bg-white border border-[#005a8d]/30 text-slate-900 text-sm rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-[#005a8d]"
+                  className="flex-1 bg-white border border-primary/30 text-slate-900 text-sm rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-primary"
                 />
                 <button
                   onClick={handleVerify2FA}
                   disabled={otp.length !== 6 || toggling2FA}
-                  className="bg-[#005a8d] hover:bg-[#004a75] text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
+                  className="bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
                 >
                   Verify
                 </button>

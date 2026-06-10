@@ -5,17 +5,17 @@ import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#0ea5e9]/20">
+    <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-primary-light/20">
       
       {/* Navigation */}
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0ea5e9] to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] group-hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] transition-all">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-light to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] group-hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] transition-all">
               <Scan size={22} />
             </div>
             <span className="text-2xl font-black font-['Space_Grotesk'] tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">MedScan</span>
-            <span className="text-xs font-bold bg-[#0ea5e9]/10 text-[#0ea5e9] px-2 py-0.5 rounded ml-1">AI</span>
+            <span className="text-xs font-bold bg-primary-light/10 text-primary-light px-2 py-0.5 rounded ml-1">AI</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8 font-medium text-slate-600">
@@ -36,7 +36,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         {/* Abstract Background Shapes */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-[#0ea5e9]/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-primary-light/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-[#38bdf8]/10 to-transparent rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
 
         <div className="container mx-auto px-6 relative z-10">
@@ -59,7 +59,7 @@ const LandingPage = () => {
               className="text-5xl md:text-7xl font-black font-['Space_Grotesk'] leading-[1.1] mb-6 tracking-tight"
             >
               Understand your lab reports. <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0ea5e9] to-[#2563eb]">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-[#2563eb]">
                 In any language.
               </span>
             </motion.h1>
@@ -82,7 +82,7 @@ const LandingPage = () => {
               <Link to="/register" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-slate-900/30 hover:-translate-y-1 transition-all cursor-pointer">
                 Try MedScanAI Free <ArrowRight size={20} />
               </Link>
-              <Link to="/login" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white border-2 border-slate-200 text-slate-700 px-8 py-4 rounded-full font-bold text-lg hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-all cursor-pointer">
+              <Link to="/login" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white border-2 border-slate-200 text-slate-700 px-8 py-4 rounded-full font-bold text-lg hover:border-primary-light hover:text-primary-light transition-all cursor-pointer">
                 Sign In
               </Link>
             </motion.div>
@@ -195,7 +195,7 @@ const LandingPage = () => {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0ea5e9] to-[#2563eb] text-white flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-blue-500/30">1</div>
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-light to-[#2563eb] text-white flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-blue-500/30">1</div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Upload Report</h3>
               <p className="text-sm text-slate-600">Take a photo or upload a PDF of your medical lab report. Any format works.</p>
             </div>
@@ -240,14 +240,14 @@ const LandingPage = () => {
                 </li>
               </ul>
               <div className="mt-10">
-                <Link to="/register" className="text-[#0ea5e9] font-bold flex items-center gap-2 hover:gap-3 transition-all cursor-pointer">
+                <Link to="/register" className="text-primary-light font-bold flex items-center gap-2 hover:gap-3 transition-all cursor-pointer">
                   Create your free account <ArrowRight size={20} />
                 </Link>
               </div>
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#0ea5e9] to-[#2563eb] rounded-[3rem] blur-3xl opacity-20 transform rotate-6"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary-light to-[#2563eb] rounded-[3rem] blur-3xl opacity-20 transform rotate-6"></div>
               <div className="bg-slate-900 rounded-[2rem] p-8 relative shadow-2xl border border-slate-800">
                 <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
                   <div className="w-12 h-12 bg-red-500/20 text-red-400 rounded-xl flex items-center justify-center">
@@ -295,7 +295,7 @@ const LandingPage = () => {
       <footer className="bg-slate-50 py-12 border-t border-slate-200">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Scan size={20} className="text-[#0ea5e9]" />
+            <Scan size={20} className="text-primary-light" />
             <span className="text-xl font-black font-['Space_Grotesk']">MedScanAI</span>
           </div>
           <p className="text-slate-500 font-medium text-sm">© 2026 MedScanAI. Built with Gemini 2.5 Flash Vision. For hackathon demo purposes.</p>

@@ -80,10 +80,10 @@ export default function LanguageSettings() {
               className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedLanguage === lang.code ? 'border-[#005a8d]' : 'border-slate-300'}`}>
-                  {selectedLanguage === lang.code && <div className="w-2.5 h-2.5 rounded-full bg-[#005a8d]" />}
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedLanguage === lang.code ? 'border-primary' : 'border-slate-300'}`}>
+                  {selectedLanguage === lang.code && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                 </div>
-                <span className={`text-sm ${selectedLanguage === lang.code ? 'font-bold text-[#005a8d]' : 'font-medium text-slate-700'}`}>
+                <span className={`text-sm ${selectedLanguage === lang.code ? 'font-bold text-primary' : 'font-medium text-slate-700'}`}>
                   {lang.name}
                 </span>
               </div>
@@ -96,7 +96,7 @@ export default function LanguageSettings() {
           <button
             onClick={handleSave}
             disabled={saving || selectedLanguage === user?.language}
-            className="w-full flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
           >
             {saving && <Loader2 size={18} className="animate-spin" />}
             {saving ? 'Saving...' : 'Save'}

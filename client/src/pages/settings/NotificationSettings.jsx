@@ -46,7 +46,7 @@ export default function NotificationSettings() {
   const Toggle = ({ enabled, onClick }) => (
     <button 
       onClick={onClick}
-      className={`w-12 h-7 rounded-full transition-colors relative cursor-pointer shrink-0 ${enabled ? 'bg-[#005a8d]' : 'bg-slate-200'}`}
+      className={`w-12 h-7 rounded-full transition-colors relative cursor-pointer shrink-0 ${enabled ? 'bg-primary' : 'bg-slate-200'}`}
     >
       <div className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-transform shadow-sm ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
     </button>
@@ -127,7 +127,7 @@ export default function NotificationSettings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer mt-4"
+          className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-4 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer mt-4"
         >
           {saving && <Loader2 size={18} className="animate-spin" />}
           {saving ? 'Saving...' : 'Save Preferences'}

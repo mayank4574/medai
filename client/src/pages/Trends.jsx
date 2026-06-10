@@ -88,7 +88,7 @@ export default function Trends() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 size={32} className="text-[#005a8d] animate-spin" />
+        <Loader2 size={32} className="text-primary animate-spin" />
         <p className="text-slate-500 font-medium">Loading trends...</p>
       </div>
     );
@@ -128,14 +128,14 @@ export default function Trends() {
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-[#005a8d] rounded-full"></div>
+                <div className="w-1.5 h-6 bg-primary rounded-full"></div>
                 <h3 className="text-xl font-bold text-slate-900">{metricInfo?.name || 'Metric'} Progression</h3>
               </div>
               <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
                 Show Reference Range Overlay
                 <button 
                   onClick={() => setShowOverlay(!showOverlay)}
-                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${showOverlay ? 'bg-[#005a8d]' : 'bg-slate-200'}`}
+                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${showOverlay ? 'bg-primary' : 'bg-slate-200'}`}
                 >
                   <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${showOverlay ? 'translate-x-6' : 'translate-x-1'}`}></div>
                 </button>
@@ -160,7 +160,7 @@ export default function Trends() {
                     stroke="#00a3e0" 
                     strokeWidth={3}
                     dot={{ fill: 'white', stroke: '#00a3e0', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, fill: '#005a8d', stroke: 'white', strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: 'var(--primary)', stroke: 'white', strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -179,7 +179,7 @@ export default function Trends() {
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-4 shadow-sm hover:border-[#00a3e0] transition-colors cursor-pointer">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-[#005a8d] shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-primary shrink-0">
                 <Pill size={20} />
               </div>
               <div>

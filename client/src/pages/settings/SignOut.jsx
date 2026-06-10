@@ -69,7 +69,7 @@ export default function SignOut() {
 
           <Link
             to="/settings"
-            className="w-full flex items-center justify-center text-[#005a8d] hover:bg-blue-50 py-3.5 rounded-xl text-sm font-bold transition-all mt-4 cursor-pointer"
+            className="w-full flex items-center justify-center text-primary hover:bg-blue-50 py-3.5 rounded-xl text-sm font-bold transition-all mt-4 cursor-pointer"
           >
             Cancel
           </Link>

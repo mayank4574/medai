@@ -70,7 +70,7 @@ export default function HelpSupport() {
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 outline-none focus:ring-2 focus:ring-primary transition-all"
                 placeholder="Briefly describe your issue"
                 required
               />
@@ -80,7 +80,7 @@ export default function HelpSupport() {
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 outline-none focus:ring-2 focus:ring-[#005a8d] transition-all resize-none h-32"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 outline-none focus:ring-2 focus:ring-primary transition-all resize-none h-32"
                 placeholder="How can we help you?"
                 required
               />
@@ -88,7 +88,7 @@ export default function HelpSupport() {
             <button
               type="submit"
               disabled={submitting || !subject || !message}
-              className="w-full flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
             >
               {submitting && <Loader2 size={18} className="animate-spin" />}
               {submitting ? 'Submitting...' : 'Submit Support Ticket'}

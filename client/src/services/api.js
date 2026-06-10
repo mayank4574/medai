@@ -42,4 +42,10 @@ export const getReport = (id) => api.get(`/reports/${id}`);
 export const deleteReport = (id) => api.delete(`/reports/${id}`);
 export const getTrends = (valueName) => api.get(`/reports/trends/${valueName}`);
 
+// Notifications
+export const getNotifications = () => api.get('/notifications');
+export const getUnreadNotificationsCount = () => api.get('/notifications/unread-count');
+export const markNotificationRead = (id) => api.put(`/notifications/${id}/read`);
+export const markAllNotificationsRead = () => api.put('/notifications/read-all');
+
 export default api;

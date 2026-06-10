@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getReports } from '../services/api';
+import { getReports, getNotifications, getUnreadNotificationsCount, markNotificationRead, markAllNotificationsRead } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import { getAvatarUrl } from '../utils/avatar';
 import { 
@@ -74,48 +74,23 @@ export default function Layout() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getReports();
-        setAllReports(res.data);
-        // Build notifications from reports
-        const notifs = [];
-        res.data.forEach(r => {
-          const abnormal = r.labValues?.filter(v => v.status !== 'normal') || [];
-          if (r.overallStatus === 'urgent') {
-            notifs.push({
-              id: r._id,
-              type: 'urgent',
-              title: `Urgent: ${r.reportType?.charAt(0).toUpperCase() + r.reportType?.slice(1)} Report`,
-              message: `${abnormal.length} critical values detected. Consult a doctor.`,
-              time: new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              read: false
-            });
-          } else if (r.overallStatus === 'attention') {
-            notifs.push({
-              id: r._id,
-              type: 'warning',
-              title: `${r.reportType?.charAt(0).toUpperCase() + r.reportType?.slice(1)} Report: ${abnormal.length} flagged`,
-              message: `Some values need your attention.`,
-              time: new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              read: false
-            });
-          } else if (r.overallStatus === 'normal') {
-            notifs.push({
-              id: r._id,
-              type: 'success',
-              title: `${r.reportType?.charAt(0).toUpperCase() + r.reportType?.slice(1)} Report: All Clear`,
-              message: `All values are within normal range.`,
-              time: new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              read: true
-            });
-          }
-        });
-        setNotifications(notifs);
+        const [reportsRes, notifsRes, unreadRes] = await Promise.all([
+          getReports(),
+          getNotifications(),
+          getUnreadNotificationsCount()
+        ]);
+        setAllReports(reportsRes.data);
+        setNotifications(notifsRes.data);
+        // Note: unread count can be derived from notifications list or the endpoint
+        // To keep it perfectly synchronized with the endpoint:
       } catch (err) {
         // ignore
       }
     };
     fetchData();
   }, [location.pathname]);
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   // Search handler
   useEffect(() => {
@@ -140,15 +115,43 @@ export default function Layout() {
     navigate('/login');
   };
 
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllNotificationsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const dismissNotification = (id) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+  const handleNotificationClick = async (notif) => {
+    if (!notif.isRead) {
+      try {
+        await markNotificationRead(notif._id);
+        setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    setShowNotifications(false);
+    if (notif.reportId) {
+      navigate(`/reports/${notif.reportId}`);
+    }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const getRelativeTime = (dateStr) => {
+    const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    const daysDifference = Math.round((new Date(dateStr) - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysDifference === 0) {
+      const hoursDifference = Math.round((new Date(dateStr) - new Date()) / (1000 * 60 * 60));
+      if (hoursDifference === 0) {
+        const minsDifference = Math.round((new Date(dateStr) - new Date()) / (1000 * 60));
+        return rtf.format(minsDifference, 'minute');
+      }
+      return rtf.format(hoursDifference, 'hour');
+    }
+    return rtf.format(daysDifference, 'day');
+  };
 
   const navItems = [
     { name: t('Dashboard'), path: '/dashboard', icon: LayoutDashboard },
@@ -174,11 +177,11 @@ export default function Layout() {
         <div>
           <div className="p-6">
             <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-light to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(14,165,233,0.3)]">
                 <Scan size={16} />
               </div>
               <span className="text-xl font-bold font-['Space_Grotesk'] tracking-wide text-slate-900">MedScan</span>
-              <span className="text-xs bg-[#0ea5e9]/10 text-[#0ea5e9] px-2 py-0.5 rounded font-bold">AI</span>
+              <span className="text-xs bg-primary-light/10 text-primary-light px-2 py-0.5 rounded font-bold">AI</span>
             </Link>
           </div>
           
@@ -192,11 +195,11 @@ export default function Layout() {
                       to={item.path}
                       className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                         isActive 
-                          ? 'bg-[#005a8d]/10 text-[#005a8d]' 
+                          ? 'bg-primary/10 text-primary' 
                           : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                       }`}
                     >
-                      <item.icon size={18} className={isActive ? 'text-[#005a8d]' : 'text-slate-400'} />
+                      <item.icon size={18} className={isActive ? 'text-primary' : 'text-slate-400'} />
                       {item.name}
                     </Link>
                   </li>
@@ -222,7 +225,7 @@ export default function Layout() {
               <LogOut size={16} />
             </button>
           </div>
-          <Link to="/upload" className="w-full flex items-center justify-center gap-2 bg-[#005a8d] hover:bg-[#004a75] text-white py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer">
+          <Link to="/upload" className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer">
             <Plus size={16} />
             New Scan
           </Link>
@@ -246,7 +249,7 @@ export default function Layout() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => { if (searchQuery.length >= 2) setShowSearch(true); }}
-                className="pl-9 pr-4 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005a8d] focus:bg-white transition-all w-64"
+                className="pl-9 pr-4 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all w-64"
               />
               {searchQuery && (
                 <button 
@@ -302,7 +305,7 @@ export default function Layout() {
                     <Link 
                       to="/reports" 
                       onClick={() => { setShowSearch(false); setSearchQuery(''); }}
-                      className="text-xs text-[#005a8d] font-semibold hover:underline cursor-pointer flex items-center gap-1"
+                      className="text-xs text-primary font-semibold hover:underline cursor-pointer flex items-center gap-1"
                     >
                       View all reports <ExternalLink size={10} />
                     </Link>
@@ -331,7 +334,7 @@ export default function Layout() {
                     <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
                     <div className="flex items-center gap-3">
                       {unreadCount > 0 && (
-                        <button onClick={markAllRead} className="text-xs text-[#005a8d] font-semibold hover:underline cursor-pointer">Mark all read</button>
+                        <button onClick={handleMarkAllRead} className="text-xs text-primary font-semibold hover:underline cursor-pointer">Mark all read</button>
                       )}
                       <button onClick={() => setShowNotifications(false)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
                         <X size={16} />
@@ -349,11 +352,13 @@ export default function Layout() {
                       notifications.map((notif, idx) => (
                         <div 
                           key={idx} 
-                          className={`flex items-start gap-3 px-4 py-3.5 border-b border-slate-50 last:border-0 transition-colors hover:bg-slate-50 ${!notif.read ? 'bg-blue-50/40' : ''}`}
+                          onClick={() => handleNotificationClick(notif)}
+                          className={`flex items-start gap-3 px-4 py-3.5 border-b border-slate-50 last:border-0 transition-colors cursor-pointer hover:bg-slate-50 ${!notif.isRead ? 'bg-blue-50/40' : ''}`}
                         >
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
                             notif.type === 'urgent' ? 'bg-red-100 text-red-500' :
                             notif.type === 'warning' ? 'bg-amber-100 text-amber-600' :
+                            notif.type === 'info' ? 'bg-blue-100 text-blue-500' :
                             'bg-green-100 text-green-500'
                           }`}>
                             {notif.type === 'urgent' ? <AlertTriangle size={14} /> :
@@ -361,25 +366,17 @@ export default function Layout() {
                              <CheckCircle2 size={14} />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <Link 
-                              to={`/reports/${notif.id}`}
-                              onClick={() => setShowNotifications(false)}
-                              className="text-sm font-semibold text-slate-900 hover:text-[#005a8d] cursor-pointer leading-tight block"
-                            >
+                            <span className="text-sm font-semibold text-slate-900 hover:text-primary leading-tight block">
                               {notif.title}
-                            </Link>
+                            </span>
                             <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{notif.message}</p>
                             <p className="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
-                              <Clock size={10} /> {notif.time}
+                              <Clock size={10} /> {getRelativeTime(notif.createdAt)}
                             </p>
                           </div>
-                          <button 
-                            onClick={() => dismissNotification(notif.id)}
-                            className="text-slate-300 hover:text-red-400 cursor-pointer shrink-0 mt-1"
-                            title="Dismiss"
-                          >
-                            <X size={14} />
-                          </button>
+                          {!notif.isRead && (
+                            <div className="w-2 h-2 rounded-full bg-primary-light shrink-0 mt-2"></div>
+                          )}
                         </div>
                       ))
                     )}
@@ -389,7 +386,7 @@ export default function Layout() {
                       <Link 
                         to="/reports" 
                         onClick={() => setShowNotifications(false)}
-                        className="text-xs text-[#005a8d] font-semibold hover:underline cursor-pointer"
+                        className="text-xs text-primary font-semibold hover:underline cursor-pointer"
                       >
                         View all reports →
                       </Link>
@@ -403,7 +400,7 @@ export default function Layout() {
             <div className="relative" ref={settingsRef}>
               <button 
                 onClick={() => { setShowSettings(!showSettings); setShowNotifications(false); }}
-                className={`p-2 rounded-lg cursor-pointer transition-all ${showSettings ? 'bg-[#005a8d] text-white' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                className={`p-2 rounded-lg cursor-pointer transition-all ${showSettings ? 'bg-primary text-white' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
               >
                 <Settings size={20} className={showSettings ? 'animate-spin' : ''} style={showSettings ? { animationDuration: '3s' } : {}} />
               </button>
@@ -434,7 +431,7 @@ export default function Layout() {
                         onClick={() => { item.action(); setShowSettings(false); }}
                         className="w-full flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition-colors cursor-pointer text-left group"
                       >
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-[#005a8d]/10 group-hover:text-[#005a8d] transition-colors shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
                           <item.icon size={16} />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -450,7 +447,7 @@ export default function Layout() {
                   <div className="p-3 border-t border-slate-100 flex gap-2">
                     <button 
                       onClick={() => { navigate('/settings'); setShowSettings(false); }}
-                      className="flex-1 text-center text-xs text-[#005a8d] font-semibold py-2 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+                      className="flex-1 text-center text-xs text-primary font-semibold py-2 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
                     >
                       {t('All Settings')}
                     </button>
@@ -469,7 +466,7 @@ export default function Layout() {
             <img 
               src={getAvatarUrl(user, 80)}
               alt="User" 
-              className="w-8 h-8 rounded-full border border-slate-200 object-cover ml-1 cursor-pointer hover:ring-2 hover:ring-[#005a8d] transition-all"
+              className="w-8 h-8 rounded-full border border-slate-200 object-cover ml-1 cursor-pointer hover:ring-2 hover:ring-primary transition-all"
               onClick={() => navigate('/settings')}
               onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=random`; }}
             />

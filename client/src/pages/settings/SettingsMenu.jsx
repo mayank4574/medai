@@ -31,14 +31,14 @@ export default function SettingsMenu() {
             to={item.path}
             className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-[#005a8d]/10 group-hover:text-[#005a8d] transition-colors shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
               <item.icon size={20} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-base font-semibold text-slate-900">{item.name}</p>
               <p className="text-xs text-slate-500">{item.desc}</p>
             </div>
-            <ChevronRight size={20} className="text-slate-300 group-hover:text-[#005a8d] transition-colors" />
+            <ChevronRight size={20} className="text-slate-300 group-hover:text-primary transition-colors" />
           </Link>
         ))}
       </div>
