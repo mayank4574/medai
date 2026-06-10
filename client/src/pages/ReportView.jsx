@@ -3,6 +3,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Share2, Download, ClipboardList, Info, ChevronRight, Stethoscope, Clock, ShieldCheck, Activity, ArrowLeft, Trash2, Loader2, AlertTriangle, Search, CheckCircle } from 'lucide-react';
 import { getReport, deleteReport } from '../services/api';
 import ParameterTooltip from '../components/ParameterTooltip';
+import { generateReportPDF } from '../utils/pdfGenerator';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 // Color/status helpers
 const getStatusColor = (status) => {
@@ -26,9 +29,11 @@ const getOverallBadge = (status) => {
 export default function ReportView() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -52,6 +57,26 @@ export default function ReportView() {
       } catch (err) {
         setError('Failed to delete report');
       }
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!report) return;
+    try {
+      setIsGeneratingPdf(true);
+      const loadingToast = toast.loading('Generating your PDF report...');
+      
+      // Delay slightly to ensure UI is ready
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      await generateReportPDF(report, user);
+      
+      toast.success('PDF downloaded successfully!', { id: loadingToast });
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsGeneratingPdf(false);
     }
   };
 
@@ -117,8 +142,13 @@ export default function ReportView() {
           >
             <Trash2 size={16} /> Delete
           </button>
-          <button className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer hover:shadow-lg">
-            <Download size={16} /> PDF Download
+          <button 
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPdf}
+            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-semibold transition-colors shadow-sm disabled:opacity-70"
+          >
+            {isGeneratingPdf ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+            {isGeneratingPdf ? 'Generating...' : 'PDF Download'}
           </button>
         </div>
       </div>
