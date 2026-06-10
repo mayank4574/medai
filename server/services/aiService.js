@@ -43,9 +43,7 @@ IMPORTANT RULES:
 1. Extract EVERY lab value from the report
 2. For each value, determine: name, numeric value, unit, reference range (min/max), status
 3. Status must be one of: "normal" (within range), "borderline" (within 10% of boundary), "critical" (outside range significantly)
-4. Provide a simple, reassuring explanation for each abnormal value
-5. NEVER diagnose. Always say "This is not a diagnosis"
-6. Categorize each value: CBC, Liver, Kidney, Thyroid, Lipid, Diabetes, Vitamin, Other
+4. Categorize each value: CBC, Liver, Kidney, Thyroid, Lipid, Diabetes, Vitamin, Other
 
 Return ONLY valid JSON in this exact format:
 {
@@ -60,7 +58,7 @@ Return ONLY valid JSON in this exact format:
       "referenceMin": 0,
       "referenceMax": 20,
       "status": "borderline|normal|critical",
-      "explanation": "Simple explanation in target language",
+      "explanation": "",
       "category": "CBC|Liver|Kidney|Thyroid|Lipid|Diabetes|Vitamin|Other"
     }
   ],
@@ -71,6 +69,8 @@ Return ONLY valid JSON in this exact format:
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
+const { generateExplanation } = require('./explanationEngine');
+
 /**
  * Strips markdown code fences from a Gemini response and parses it as JSON.
  * Gemini (like GPT-4o) sometimes wraps JSON in ```json … ``` blocks.
@@ -80,7 +80,17 @@ function parseGeminiJson(rawText) {
     .replace(/```json\n?/g, '')
     .replace(/```\n?/g, '')
     .trim();
-  return JSON.parse(cleaned);
+  const parsed = JSON.parse(cleaned);
+  
+  // Inject medical explanations strictly from our verified knowledge base
+  if (parsed && Array.isArray(parsed.labValues)) {
+    parsed.labValues = parsed.labValues.map(val => ({
+      ...val,
+      explanation: generateExplanation(val)
+    }));
+  }
+  
+  return parsed;
 }
 
 /**
@@ -158,7 +168,7 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
             // System-level instructions injected as the first user text part
             { text: SYSTEM_PROMPT },
             {
-              text: `Analyze this medical lab report. Extract ALL values. Explain abnormal values in ${langName}. Return JSON only.`
+              text: `Analyze this medical lab report. Extract ALL values. Return JSON only.`
             },
             // Inline image (Gemini's equivalent of OpenAI's image_url block)
             {
@@ -211,7 +221,7 @@ async function analyzeReportFromText(text, language = 'en') {
           parts: [
             { text: SYSTEM_PROMPT },
             {
-              text: `Analyze this medical lab report text. Extract ALL values. Explain abnormal values in ${langName}. Return JSON only.\n\nReport:\n${text}`
+              text: `Analyze this medical lab report text. Extract ALL values. Return JSON only.\n\nReport:\n${text}`
             }
           ]
         }

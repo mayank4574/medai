@@ -29,8 +29,10 @@ import {
   CheckCircle2,
   Clock,
   Trash2,
-  ExternalLink
+  ExternalLink,
+  Loader2
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function Layout() {
   const { t } = useTranslation();
@@ -46,6 +48,7 @@ export default function Layout() {
   const [searchResults, setSearchResults] = useState([]);
   const [allReports, setAllReports] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [isStartingScan, setIsStartingScan] = useState(false);
   
   const settingsRef = useRef(null);
   const notifRef = useRef(null);
@@ -113,6 +116,28 @@ export default function Layout() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleNewScan = async () => {
+    // Analytics tracking hook (placeholder for GA/Mixpanel/PostHog)
+    console.log('Analytics Event: new_scan_clicked');
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setIsStartingScan(true);
+    try {
+      // Simulate brief preparation to show loading state if needed
+      await new Promise(resolve => setTimeout(resolve, 300));
+      navigate('/upload');
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to open scan page');
+    } finally {
+      setIsStartingScan(false);
+    }
   };
 
   const handleMarkAllRead = async () => {
@@ -225,10 +250,15 @@ export default function Layout() {
               <LogOut size={16} />
             </button>
           </div>
-          <Link to="/upload" className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer">
-            <Plus size={16} />
-            New Scan
-          </Link>
+          <button 
+            onClick={handleNewScan} 
+            disabled={isStartingScan}
+            aria-label="Start New Scan"
+            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover focus:ring-4 focus:ring-primary/30 active:scale-95 disabled:opacity-70 text-white py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer outline-none"
+          >
+            {isStartingScan ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+            {isStartingScan ? 'Preparing...' : 'New Scan'}
+          </button>
         </div>
       </aside>
 

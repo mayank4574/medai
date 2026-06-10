@@ -96,7 +96,7 @@ export default function ParameterTooltip({ row, children, language = 'en', darkT
           </div>
           
           <p className={`text-sm leading-relaxed ${darkTheme ? 'text-slate-300' : 'text-slate-600'}`}>
-            {row.explanation || t.noExplanation}
+            {row.explanation}
           </p>
           
           <div className={`rounded-lg p-3 text-xs space-y-2 border ${darkTheme ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-100'}`}>
