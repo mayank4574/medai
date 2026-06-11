@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/analyze', protect, upload.single('report'), async (req, res) => {
   try {
     const user = req.user;
-    if (user.plan === 'free' && user.reportsThisMonth >= 3) {
+    if (user.plan === 'free' && user.reportsThisMonth >= 100) {
       return res.status(403).json({ message: 'Free plan limit reached. Upgrade to Premium.' });
     }
 
