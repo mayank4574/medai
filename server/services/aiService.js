@@ -105,18 +105,51 @@ function determineSpecialist(abnormalValues) {
  * Gemini (like GPT-4o) sometimes wraps JSON in ```json … ``` blocks.
  */
 function parseGeminiJson(rawText) {
-  const cleaned = rawText
-    .replace(/```json\n?/g, '')
-    .replace(/```\n?/g, '')
-    .trim();
-  const parsed = JSON.parse(cleaned);
+  let cleaned = rawText.trim();
+  
+  // Try to find code block first
+  const jsonBlockMatch = cleaned.match(/```json([\s\S]*?)```/);
+  if (jsonBlockMatch) {
+    cleaned = jsonBlockMatch[1].trim();
+  } else {
+    const genericBlockMatch = cleaned.match(/```([\s\S]*?)```/);
+    if (genericBlockMatch) {
+      cleaned = genericBlockMatch[1].trim();
+    }
+  }
+  
+  let parsed;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch (firstError) {
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      try {
+        const sliced = cleaned.slice(firstBrace, lastBrace + 1);
+        parsed = JSON.parse(sliced);
+      } catch (secondError) {
+        console.error("[parseGeminiJson] Failed to parse sliced JSON:", secondError.message);
+        throw firstError;
+      }
+    } else {
+      throw firstError;
+    }
+  }
   
   // Inject medical explanations strictly from our verified knowledge base
   if (parsed && Array.isArray(parsed.labValues)) {
-    parsed.labValues = parsed.labValues.map(val => ({
-      ...val,
-      explanation: generateExplanation(val)
-    }));
+    parsed.labValues = parsed.labValues.map(val => {
+      // Map referenceMin/Max to range field expected by explanationEngine
+      const range = (val.referenceMin !== undefined && val.referenceMax !== undefined) 
+        ? `${val.referenceMin} - ${val.referenceMax}` 
+        : val.range;
+      return {
+        ...val,
+        range,
+        explanation: generateExplanation({ ...val, range })
+      };
+    });
     
     // Build Clinical Guidance programmatically
     const abnormalValues = parsed.labValues.filter(v => v.status === 'borderline' || v.status === 'critical');
@@ -127,7 +160,7 @@ function parseGeminiJson(rawText) {
       name: v.name,
       value: v.value,
       unit: v.unit || '',
-      referenceRange: (v.referenceMin !== undefined && v.referenceMax !== undefined) ? `${v.referenceMin} - ${v.referenceMax}` : '',
+      referenceRange: v.range || '',
       status: v.status
     }));
 
@@ -161,8 +194,8 @@ class GeminiError extends Error {
     super(message);
     this.status = status;
     this.name = 'GeminiError';
-    // Only 429, 503, 504, or network timeouts are fallbackable
-    this.isFallbackable = status === 429 || status === 503 || status === 504 || status === 408;
+    // Fallback on all errors in production for resiliency
+    this.isFallbackable = true;
   }
 }
 
@@ -243,7 +276,8 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
       // Gemini generation config mirrors OpenAI's max_tokens / temperature
       generationConfig: {
         maxOutputTokens: 4000,
-        temperature: 0.1
+        temperature: 0.1,
+        responseMimeType: 'application/json'
       }
     });
 
@@ -288,7 +322,8 @@ async function analyzeReportFromText(text, language = 'en') {
       ],
       generationConfig: {
         maxOutputTokens: 4000,
-        temperature: 0.1
+        temperature: 0.1,
+        responseMimeType: 'application/json'
       }
     });
 

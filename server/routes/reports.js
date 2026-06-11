@@ -57,6 +57,7 @@ router.post('/analyze', protect, upload.single('report'), async (req, res) => {
       summaryLanguage: language,
       overallStatus: analysis.overallStatus,
       doctorRecommendation: analysis.doctorRecommendation,
+      clinicalGuidance: analysis.clinicalGuidance,
       aiModel: isFallback ? 'gemini-2.5-flash-fallback' : 'gemini-2.5-flash',
       analysisSource: isFallback ? 'fallback' : 'api'
     });
