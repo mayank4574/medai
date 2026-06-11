@@ -35,7 +35,7 @@ export default function Family() {
     setSaving(true);
     try {
       const token = localStorage.getItem('sahi_token') || JSON.parse(localStorage.getItem('sahi_user') || '{}')?.token;
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://medai-3onq.onrender.com/api' : 'http://localhost:5000/api');
       const res = await fetch(`${API_URL}/auth/family`, {
         method: 'POST',
         headers: {

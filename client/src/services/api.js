@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-console.log("API URL:", import.meta.env.VITE_API_URL);
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://medai-3onq.onrender.com/api' : 'http://localhost:5000/api');
+console.log("API URL in use:", API_URL);
+console.log("Is Production Build:", import.meta.env.PROD);
 console.log("Resolved API URL:", API_URL);
 
 const api = axios.create({ baseURL: API_URL });
