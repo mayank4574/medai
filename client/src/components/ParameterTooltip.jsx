@@ -28,6 +28,24 @@ const TRANSLATIONS = {
     borderline: '境界値',
     normal: '正常',
     noExplanation: '特定の説明はありません。'
+  },
+  gu: {
+    status: 'સ્થિતિ',
+    referenceRange: 'સામાન્ય સીમા',
+    yourValue: 'તમારું મૂલ્ય',
+    high: 'ઊંચું',
+    borderline: 'બોર્ડરલાઇન',
+    normal: 'સામાન્ય',
+    noExplanation: 'કોઈ ચોક્કસ સમજૂતી ઉપલબ્ધ નથી.'
+  },
+  fr: {
+    status: 'Statut',
+    referenceRange: 'Valeur de référence',
+    yourValue: 'Votre valeur',
+    high: 'Élevé',
+    borderline: 'Limite',
+    normal: 'Normal',
+    noExplanation: 'Aucune explication spécifique disponible.'
   }
 };
 

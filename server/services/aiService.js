@@ -36,15 +36,16 @@ const LANGUAGE_MAP = {
   nl: 'Dutch', tr: 'Turkish'
 };
 
-// ── System prompt (unchanged from original) ───────────────────────────────────
+// ── System prompt (optimized for multi-language output) ───────────────────────
 const SYSTEM_PROMPT = `You are MedScanAI, an AI medical lab report interpreter. You read lab reports and explain values simply.
 
 IMPORTANT RULES:
-1. Extract EVERY lab value from the report
-2. For each value, determine: name, numeric value, unit, reference range (min/max), status
-3. Status must be one of: "normal" (within range), "borderline" (within 10% of boundary), "critical" (outside range significantly)
-4. Categorize each value: CBC, Liver, Kidney, Thyroid, Lipid, Diabetes, Vitamin, Other
+1. Extract EVERY lab value from the report.
+2. For each value, determine: name, numeric value, unit, reference range (min/max), status.
+3. Status must be one of: "normal" (within range), "borderline" (within 10% of boundary), "critical" (outside range significantly).
+4. Categorize each value: category MUST be strictly one of these English values: "CBC", "Liver", "Kidney", "Thyroid", "Lipid", "Diabetes", "Vitamin", "Other".
 5. Do NOT generate: medicines, dosages, prescriptions, treatment plans, medical diagnoses, real doctor names, or fake doctor data.
+6. The name, explanation, summary, concerns, and nextSteps MUST be written in the selected target language. Do not mix English and the target language.
 
 Return ONLY valid JSON in this exact format:
 {
@@ -53,21 +54,115 @@ Return ONLY valid JSON in this exact format:
   "reportDate": "detected date or null",
   "labValues": [
     {
-      "name": "Test Name",
+      "name": "Test Name (translated)",
       "value": 42,
       "unit": "mm/hr",
       "referenceMin": 0,
       "referenceMax": 20,
       "status": "borderline|normal|critical",
-      "explanation": "",
+      "explanation": "Patient friendly explanation (translated)",
       "category": "CBC|Liver|Kidney|Thyroid|Lipid|Diabetes|Vitamin|Other"
     }
   ],
-  "summary": "Overall summary in target language",
+  "summary": "Overall summary (translated)",
   "overallStatus": "normal|attention|urgent",
-  "concerns": ["List of general health concerns in target language (informational only)"],
-  "nextSteps": ["List of lifestyle, diet, and monitoring steps in target language"]
+  "concerns": ["List of general health concerns (translated)"],
+  "nextSteps": ["List of lifestyle, diet, and monitoring steps (translated)"]
 }`;
+
+// Localized strings map for programmatically generated clinical guidance fields
+const LOCALIZED_STRINGS = {
+  en: {
+    urgency: {
+      'Normal': 'Normal',
+      'Monitor': 'Monitor',
+      'Consult Doctor': 'Consult Doctor',
+      'Urgent Review': 'Urgent Review'
+    },
+    specialist: {
+      'General Physician': 'General Physician',
+      'Nephrologist': 'Nephrologist',
+      'Gastroenterologist / Hepatologist': 'Gastroenterologist / Hepatologist',
+      'Cardiologist': 'Cardiologist',
+      'Endocrinologist': 'Endocrinologist',
+      'Hematologist': 'Hematologist'
+    },
+    disclaimer: 'This interpretation is for educational purposes only and is not a medical diagnosis, prescription, or treatment plan. Please consult a qualified healthcare professional for medical advice.',
+    globalDisclaimer: 'This interpretation is for educational purposes only and is not a medical diagnosis. Please consult a qualified healthcare professional for medical advice.'
+  },
+  ja: {
+    urgency: {
+      'Normal': '正常',
+      'Monitor': '経過観察',
+      'Consult Doctor': '医師に相談',
+      'Urgent Review': '至急受診'
+    },
+    specialist: {
+      'General Physician': '一般内科医',
+      'Nephrologist': '腎臓専門医',
+      'Gastroenterologist / Hepatologist': '消化器・肝臓専門医',
+      'Cardiologist': '循環器専門医',
+      'Endocrinologist': '内分泌専門医',
+      'Hematologist': '血液専門医'
+    },
+    disclaimer: 'この解釈は教育的な目的のみを対象としており、医師の診断、処方、または治療計画に代わるものではありません。医療的なアドバイスについては、必ず資格を持つ医療専門家にご相談ください。',
+    globalDisclaimer: 'この解釈は教育的な目的のみを対象としており、医師の診断に代わるものではありません。医療的なアドバイスについては、必ず資格を持つ医療専門家にご相談ください。'
+  },
+  hi: {
+    urgency: {
+      'Normal': 'सामान्य',
+      'Monitor': 'निगरानी रखें',
+      'Consult Doctor': 'डॉक्टर से परामर्श करें',
+      'Urgent Review': 'तत्काल समीक्षा'
+    },
+    specialist: {
+      'General Physician': 'सामान्य चिकित्सक',
+      'Nephrologist': 'किडनी विशेषज्ञ',
+      'Gastroenterologist / Hepatologist': 'पेट और लिवर विशेषज्ञ',
+      'Cardiologist': 'हृदय रोग विशेषज्ञ',
+      'Endocrinologist': 'एंडोक्रिनोलॉजिस्ट (हार्मोन विशेषज्ञ)',
+      'Hematologist': 'रक्त रोग विशेषज्ञ'
+    },
+    disclaimer: 'यह व्याख्या केवल शैक्षिक उद्देश्यों के लिए है और कोई चिकित्सा निदान, नुस्खा या उपचार योजना नहीं है। कृपया चिकित्सा सलाह के लिए एक योग्य स्वास्थ्य देखभाल पेशेवर से परामर्श लें।',
+    globalDisclaimer: 'यह व्याख्या केवल शैक्षिक उद्देश्यों के लिए है और कोई चिकित्सा निदान नहीं है। कृपया चिकित्सा सलाह के लिए एक योग्य स्वास्थ्य देखभाल पेशेवर से परामर्श लें।'
+  },
+  gu: {
+    urgency: {
+      'Normal': 'સામાન્ય',
+      'Monitor': 'નિરીક્ષણ કરો',
+      'Consult Doctor': 'ડોક્ટરની સલાહ લો',
+      'Urgent Review': 'તાત્કાલિક સમીક્ષા'
+    },
+    specialist: {
+      'General Physician': 'સામાન્ય ચિકિત્સક',
+      'Nephrologist': 'કિડની નિષ્ણાત',
+      'Gastroenterologist / Hepatologist': 'ગેસ્ટ્રોએન્ટેરોલોજિસ્ટ / હેપેટોલોજિસ્ટ',
+      'Cardiologist': 'કાર્ડિયોલોજિસ્ટ (હૃદય રોગ નિષ્ણાત)',
+      'Endocrinologist': 'એન્ડોક્રિનોલોજિสต์ (હોર્મોન નિષ્ણાત)',
+      'Hematologist': 'હેમેટોલોજિસ્ટ (લોહીના રોગના નિષ્ણાત)'
+    },
+    disclaimer: 'આ અર્થઘટન માત્ર શૈક્ષણિક હેતુઓ માટે જ છે અને તે કોઈ તબીબી નિદાન, પ્રિસ્ક્રિપ્શન કે સારવાર યોજના નથી. તબીબી સલાહ માટે કૃપા કરીને લાયક હેલ્થકેર પ્રોફેશનલની સલાહ લો.',
+    globalDisclaimer: 'આ અર્થઘટન માત્ર શૈક્ષણિક હેતુઓ માટે જ છે અને તે કોઈ તબીબી નિદાન નથી. તબીબી સલાહ માટે કૃપા કરીને લાયક હેલ્થકેર પ્રોફેશનલની સલાહ લો.'
+  },
+  fr: {
+    urgency: {
+      'Normal': 'Normal',
+      'Monitor': 'Surveiller',
+      'Consult Doctor': 'Consulter un médecin',
+      'Urgent Review': 'Consultation urgente'
+    },
+    specialist: {
+      'General Physician': 'Médecin généraliste',
+      'Nephrologist': 'Néphrologue',
+      'Gastroenterologist / Hepatologist': 'Gastro-entérologue / Hépatologue',
+      'Cardiologist': 'Cardiologue',
+      'Endocrinologist': 'Endocrinologue',
+      'Hematologist': 'Hématologue'
+    },
+    disclaimer: 'Cette interprétation est uniquement à but éducatif et ne constitue pas un diagnostic médical, une ordonnance ou un plan de traitement. Veuillez consulter un professionnel de la santé qualifié pour tout avis médical.',
+    globalDisclaimer: 'Cette interprétation est uniquement à but éducatif et ne constitue pas un diagnostic médical. Veuillez consulter un professionnel de la santé qualifié pour tout avis médical.'
+  }
+};
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
@@ -104,7 +199,7 @@ function determineSpecialist(abnormalValues) {
  * Strips markdown code fences from a Gemini response and parses it as JSON.
  * Gemini (like GPT-4o) sometimes wraps JSON in ```json … ``` blocks.
  */
-function parseGeminiJson(rawText) {
+function parseGeminiJson(rawText, language = 'en') {
   let cleaned = rawText.trim();
   
   // Try to find code block first
@@ -144,10 +239,23 @@ function parseGeminiJson(rawText) {
       const range = (val.referenceMin !== undefined && val.referenceMax !== undefined) 
         ? `${val.referenceMin} - ${val.referenceMax}` 
         : val.range;
+      
+      let explanation = val.explanation || '';
+      
+      if (language === 'en') {
+        explanation = generateExplanation({ ...val, range });
+      } else {
+        // Append localized global disclaimer to Gemini's generated explanation
+        const disc = LOCALIZED_STRINGS[language]?.globalDisclaimer || LOCALIZED_STRINGS['en'].globalDisclaimer;
+        if (explanation && !explanation.includes(disc)) {
+          explanation += ` ${disc}`;
+        }
+      }
+
       return {
         ...val,
         range,
-        explanation: generateExplanation({ ...val, range })
+        explanation
       };
     });
     
@@ -167,19 +275,24 @@ function parseGeminiJson(rawText) {
     const urgencyLevel = calculateUrgency(abnormalCount, criticalCount);
     const specialistType = determineSpecialist(abnormalValues);
     
+    // Localize programmatic fields
+    const lang = LOCALIZED_STRINGS[language] ? language : 'en';
+    const localizedUrgency = LOCALIZED_STRINGS[lang].urgency[urgencyLevel] || urgencyLevel;
+    const localizedSpecialist = LOCALIZED_STRINGS[lang].specialist[specialistType] || specialistType;
+    const localizedDisclaimer = LOCALIZED_STRINGS[lang].disclaimer;
+
     parsed.clinicalGuidance = {
       findings: findings,
       concerns: parsed.concerns || [],
       nextSteps: parsed.nextSteps || [],
-      specialistType: specialistType,
-      urgencyLevel: urgencyLevel,
-      disclaimer: "This interpretation is for educational purposes only and is not a medical diagnosis, prescription, or treatment plan. Please consult a qualified healthcare professional for medical advice."
+      specialistType: localizedSpecialist,
+      urgencyLevel: localizedUrgency,
+      disclaimer: localizedDisclaimer
     };
     
     // Clean up temporary fields
     delete parsed.concerns;
     delete parsed.nextSteps;
-    // We can also delete doctorRecommendation or keep it empty
     parsed.doctorRecommendation = null;
   }
   
@@ -251,19 +364,17 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
     console.log(`[GeminiService] Analysis Start - Vision Model`);
     console.log(`[GeminiService] Gemini Request Start`);
     const startTime = Date.now();
-    // Gemini multimodal call: combine system instruction + user text + image part
+    
     const response = await genai.models.generateContent({
       model: GEMINI_MODEL,
       contents: [
         {
           role: 'user',
           parts: [
-            // System-level instructions injected as the first user text part
             { text: SYSTEM_PROMPT },
             {
-              text: `Analyze this medical lab report. Extract ALL values. Return JSON only.`
+              text: `Analyze this medical lab report. Extract ALL values. The target output language is: ${langName}. Return ALL names, explanations, categories, and text fields strictly translated and written in ${langName}. Return JSON only.`
             },
-            // Inline image (Gemini's equivalent of OpenAI's image_url block)
             {
               inlineData: {
                 mimeType: mimeType,
@@ -273,7 +384,6 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
           ]
         }
       ],
-      // Gemini generation config mirrors OpenAI's max_tokens / temperature
       generationConfig: {
         maxOutputTokens: 4000,
         temperature: 0.1,
@@ -286,7 +396,7 @@ async function analyzeReportWithVision(imageBase64, mimeType, language = 'en') {
     console.log(`[GeminiService] Analysis Complete in ${elapsed}ms`);
 
     const rawText = response.candidates[0].content.parts[0].text;
-    return parseGeminiJson(rawText);
+    return parseGeminiJson(rawText, language);
   });
 }
 
@@ -315,7 +425,7 @@ async function analyzeReportFromText(text, language = 'en') {
           parts: [
             { text: SYSTEM_PROMPT },
             {
-              text: `Analyze this medical lab report text. Extract ALL values. Return JSON only.\n\nReport:\n${text}`
+              text: `Analyze this medical lab report text. Extract ALL values. The target output language is: ${langName}. Return ALL names, explanations, categories, and text fields strictly translated and written in ${langName}. Return JSON only.\n\nReport:\n${text}`
             }
           ]
         }
@@ -331,7 +441,7 @@ async function analyzeReportFromText(text, language = 'en') {
     console.log(`[GeminiService] Analysis Complete in ${elapsed}ms`);
 
     const rawText = response.candidates[0].content.parts[0].text;
-    return parseGeminiJson(rawText);
+    return parseGeminiJson(rawText, language);
   });
 }
 
@@ -372,7 +482,7 @@ function getDemoAnalysis(language = 'en') {
       { name: 'Fasting Blood Sugar', value: 105, unit: 'mg/dL', referenceMin: 70, referenceMax: 100, status: 'borderline',
         explanation: getExplanation('Fasting sugar is slightly elevated (pre-diabetic range). Watch your diet and exercise regularly.', 'शुगर थोड़ी बढ़ी हुई है (प्री-डायबिटिक रेंज)। खान-पान में ध्यान दें।', '空腹時血糖値がやや高めです（前糖尿病範囲）。食事に注意し、定期的に運動してください。'), category: 'Diabetes' },
       { name: 'HbA1c', value: 5.4, unit: '%', referenceMin: 4, referenceMax: 5.7, status: 'normal',
-        explanation: getExplanation('HbA1c is normal. Your 3-month average blood sugar is fine.', 'HbA1c सामान्य है। पिछले 3 महीनों की औसत शुगर ठीक है।', 'HbA1cは正常です。過去3ヶ月の平均血糖値は問題ありません。'), category: 'Diabetes' },
+        explanation: getExplanation('HbA1c is normal. Your 3-month average blood sugar is fine.', 'HbA1c सामान्य है। पिछले 3 महीनों की औसत शुगर ठीक है।', 'HbA1cは正常です。過去3ヶ月의平均血糖値は問題ありません。'), category: 'Diabetes' },
       { name: 'Total Cholesterol', value: 215, unit: 'mg/dL', referenceMin: 0, referenceMax: 200, status: 'borderline',
         explanation: getExplanation('Cholesterol is slightly elevated. Reduce fried foods and exercise more.', 'कोलेस्ट्रॉल थोड़ा बढ़ा है। तला-भुना कम करें।', 'コレステロールがやや高めです。揚げ物を減らし、運動を増やしてください。'), category: 'Lipid' },
       { name: 'HDL Cholesterol', value: 55, unit: 'mg/dL', referenceMin: 40, referenceMax: 60, status: 'normal',
@@ -397,7 +507,7 @@ function getDemoAnalysis(language = 'en') {
     doctorRecommendation: getExplanation(
       'See doctor for Vitamin D supplements. Recheck TSH in 6 weeks. Rest is fine. No emergency.',
       'विटामिन D सप्लीमेंट के लिए डॉक्टर से मिलें। 6 हफ्ते बाद TSH दोबारा चेक करवाएं। बाकी सब ठीक है।',
-      'ビタミンDサプリメントについて医師に相談してください。6週間後にTSHを再検査してください。それ以外は問題ありません。'
+      'ビタミンDサプリメントについて医師に相談してください。6週間後にTSHを再検査してください。それ以外は問題ありません।'
     )
   };
 }
