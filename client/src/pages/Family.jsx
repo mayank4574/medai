@@ -35,7 +35,8 @@ export default function Family() {
     setSaving(true);
     try {
       const token = localStorage.getItem('sahi_token') || JSON.parse(localStorage.getItem('sahi_user') || '{}')?.token;
-      const res = await fetch('http://localhost:5000/api/auth/family', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${API_URL}/auth/family`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
