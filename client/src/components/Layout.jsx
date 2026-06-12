@@ -228,6 +228,7 @@ export default function Layout() {
 
       {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-slate-50 border-r border-slate-200 flex flex-col justify-between transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div>
           <div className="p-4 lg:p-6 flex justify-between items-center">
             <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer" onClick={() => setIsMobileMenuOpen(false)}>
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-light to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(14,165,233,0.3)] shrink-0">
