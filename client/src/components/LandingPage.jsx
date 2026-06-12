@@ -10,12 +10,12 @@ const LandingPage = () => {
       {/* Navigation */}
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-light to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] group-hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] transition-all">
-              <Scan size={22} />
+          <div className="flex items-center gap-1 sm:gap-2 group cursor-pointer shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary-light to-[#2563eb] flex items-center justify-center font-bold text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] group-hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] transition-all shrink-0">
+              <Scan size={18} className="sm:w-[22px] sm:h-[22px]" />
             </div>
-            <span className="text-2xl font-black font-['Space_Grotesk'] tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">MedScan</span>
-            <span className="text-xs font-bold bg-primary-light/10 text-primary-light px-2 py-0.5 rounded ml-1">AI</span>
+            <span className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">MedScan</span>
+            <span className="text-[10px] sm:text-xs font-bold bg-primary-light/10 text-primary-light px-1.5 sm:px-2 py-0.5 rounded ml-0.5 sm:ml-1">AI</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8 font-medium text-slate-600">
@@ -24,9 +24,9 @@ const LandingPage = () => {
             <a href="#security" className="hover:text-slate-900 transition-colors cursor-pointer">Security</a>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="hidden sm:block font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer">Log In</Link>
-            <Link to="/register" className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-slate-900/20 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link to="/login" className="hidden sm:block font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer whitespace-nowrap">Log In</Link>
+            <Link to="/register" className="bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-base px-4 py-2 sm:px-6 sm:py-2.5 rounded-full font-bold shadow-lg shadow-slate-900/20 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer whitespace-nowrap shrink-0">
               Get Started
             </Link>
           </div>
