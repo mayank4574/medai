@@ -92,18 +92,18 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="mt-16 flex items-center justify-center gap-8 md:gap-16"
+              className="mt-16 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16"
             >
               <div className="text-center">
                 <p className="text-3xl font-black text-slate-900">99.8%</p>
                 <p className="text-xs text-slate-500 font-medium mt-1">OCR Accuracy</p>
               </div>
-              <div className="w-px h-10 bg-slate-200"></div>
+              <div className="hidden md:block w-px h-10 bg-slate-200"></div>
               <div className="text-center">
                 <p className="text-3xl font-black text-slate-900">25+</p>
                 <p className="text-xs text-slate-500 font-medium mt-1">Languages</p>
               </div>
-              <div className="w-px h-10 bg-slate-200"></div>
+              <div className="hidden md:block w-px h-10 bg-slate-200"></div>
               <div className="text-center">
                 <p className="text-3xl font-black text-slate-900">Gemini 2.5 Flash</p>
                 <p className="text-xs text-slate-500 font-medium mt-1">Vision Engine</p>
