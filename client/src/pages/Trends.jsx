@@ -103,12 +103,12 @@ export default function Trends() {
             Long-term visualization of your metabolic and diagnostic markers to identify patterns and predict future health outcomes.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <div className="relative">
             <select 
               value={selectedMetric}
               onChange={(e) => setSelectedMetric(e.target.value)}
-              className="appearance-none bg-white border border-slate-300 text-slate-900 text-sm font-semibold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-52 pl-4 pr-10 py-2.5 outline-none shadow-sm cursor-pointer"
+              className="appearance-none bg-white border border-slate-300 text-slate-900 text-sm font-semibold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-52 pl-4 pr-10 py-2.5 outline-none shadow-sm cursor-pointer"
             >
               {METRICS.map(m => (
                 <option key={m.key} value={m.key}>{m.name}</option>
