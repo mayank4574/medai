@@ -6,6 +6,7 @@ import ParameterTooltip from '../components/ParameterTooltip';
 import { generateReportPDF } from '../utils/pdfGenerator';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useModal } from '../context/ModalContext';
 
 const VIEW_TRANSLATIONS = {
   en: {
@@ -361,6 +362,7 @@ export default function ReportView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const { openConfirm } = useModal();
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -376,15 +378,31 @@ export default function ReportView() {
     if (id) fetchReport();
   }, [id]);
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this report?')) {
-      try {
+  const handleDelete = () => {
+    const reportLang = report?.summaryLanguage || 'en';
+    openConfirm({
+      contextKey: 'deleteReport',
+      variant: 'danger',
+      lang: reportLang,
+      onConfirm: async () => {
         await deleteReport(id);
-        navigate('/reports');
-      } catch (err) {
-        setError('Failed to delete report');
+        return {
+          type: 'success',
+          title: reportLang === 'ja' ? '削除完了' :
+                 reportLang === 'hi' ? 'सफलतापूर्वक हटाया गया' :
+                 reportLang === 'gu' ? 'સફળતાપૂર્વક કાઢી નાખવામાં આવ્યું' :
+                 reportLang === 'fr' ? 'Suppression réussie' : 'Report Deleted',
+          description: reportLang === 'ja' ? 'レポートは正常に削除されました。' :
+                       reportLang === 'hi' ? 'रिपोर्ट को सफलतापूर्वक हटा दिया गया है।' :
+                       reportLang === 'gu' ? 'રિપોર્ટ સફળતાપૂર્વક કાઢી નાખવામાં આવ્યો છે.' :
+                       reportLang === 'fr' ? 'Le rapport a été supprimé avec succès.' : 'The report has been successfully deleted.',
+          lang: reportLang,
+          onClose: () => {
+            navigate('/reports');
+          }
+        };
       }
-    }
+    });
   };
 
   const handleDownloadPDF = async () => {

@@ -1,33 +1,46 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, LogOut, Loader2 } from 'lucide-react';
+import { ChevronLeft, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { logoutAllSessions } from '../../services/api';
-import toast, { Toaster } from 'react-hot-toast';
+import { useModal } from '../../context/ModalContext';
+import { Toaster } from 'react-hot-toast';
 
 export default function SignOut() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { openConfirm } = useModal();
 
   const handleSignOut = () => {
     logout();
     navigate('/login');
   };
 
-  const handleSignOutAll = async () => {
-    setLoading(true);
-    try {
-      await logoutAllSessions();
-      toast.success('Logged out of all devices');
-      setTimeout(() => {
-        logout();
-        navigate('/login');
-      }, 1000);
-    } catch (err) {
-      toast.error('Failed to logout of all devices');
-      setLoading(false);
-    }
+  const handleSignOutAll = () => {
+    const userLang = user?.language || 'en';
+    openConfirm({
+      contextKey: 'logoutAll',
+      variant: 'warning',
+      lang: userLang,
+      onConfirm: async () => {
+        await logoutAllSessions();
+        return {
+          type: 'success',
+          title: userLang === 'ja' ? 'ログアウト完了' :
+                 userLang === 'hi' ? 'सफलतापूर्वक लॉगआउट' :
+                 userLang === 'gu' ? 'સફળતાપૂર્વક લોગઆઉટ' :
+                 userLang === 'fr' ? 'Déconnexion réussie' : 'Logged Out',
+          description: userLang === 'ja' ? 'すべてのデバイスからログアウトしました。' :
+                       userLang === 'hi' ? 'सभी उपकरणों से लॉगआउट कर दिया गया है।' :
+                       userLang === 'gu' ? 'તમામ ઉપકરણોમાંથી લોગઆઉટ કરવામાં આવ્યું છે.' :
+                       userLang === 'fr' ? 'Déconnexion de tous les appareils réussie.' : 'Successfully logged out of all devices.',
+          lang: userLang,
+          onClose: () => {
+            logout();
+            navigate('/login');
+          }
+        };
+      }
+    });
   };
 
   return (
@@ -61,10 +74,9 @@ export default function SignOut() {
           
           <button
             onClick={handleSignOutAll}
-            disabled={loading}
-            className="w-full flex items-center justify-center bg-white border-2 border-red-500 text-red-500 hover:bg-red-50 py-3.5 rounded-xl text-sm font-bold transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50"
+            className="w-full flex items-center justify-center bg-white border-2 border-red-500 text-red-500 hover:bg-red-50 py-3.5 rounded-xl text-sm font-bold transition-all active:scale-[0.98] cursor-pointer"
           >
-            {loading ? <Loader2 size={18} className="animate-spin" /> : 'Sign Out of All Devices'}
+            Sign Out of All Devices
           </button>
 
           <Link

@@ -10,6 +10,7 @@ import Family from './pages/Family';
 import Auth from './pages/Auth';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ModalProvider } from './context/ModalContext';
 
 // Settings Pages
 import SettingsMenu from './pages/settings/SettingsMenu';
@@ -36,29 +37,31 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider>
-          <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Auth />} />
-          <Route path="/register" element={<Auth />} />
-          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/upload" element={<UploadScan />} />
-            <Route path="/reports" element={<ReportAnalysis />} />
-            <Route path="/reports/:id" element={<ReportView />} />
-            <Route path="/trends" element={<Trends />} />
-            <Route path="/family" element={<Family />} />
-            
-            {/* Nested Settings Routes */}
-            <Route path="/settings" element={<SettingsMenu />} />
-            <Route path="/settings/profile" element={<MyProfile />} />
-            <Route path="/settings/language" element={<LanguageSettings />} />
-            <Route path="/settings/security" element={<SecuritySettings />} />
-            <Route path="/settings/notifications" element={<NotificationSettings />} />
-            <Route path="/settings/appearance" element={<AppearanceSettings />} />
-            <Route path="/settings/help" element={<HelpSupport />} />
-            <Route path="/settings/signout" element={<SignOut />} />
-          </Route>
-          </Routes>
+          <ModalProvider>
+            <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Auth />} />
+            <Route path="/register" element={<Auth />} />
+            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/upload" element={<UploadScan />} />
+              <Route path="/reports" element={<ReportAnalysis />} />
+              <Route path="/reports/:id" element={<ReportView />} />
+              <Route path="/trends" element={<Trends />} />
+              <Route path="/family" element={<Family />} />
+              
+              {/* Nested Settings Routes */}
+              <Route path="/settings" element={<SettingsMenu />} />
+              <Route path="/settings/profile" element={<MyProfile />} />
+              <Route path="/settings/language" element={<LanguageSettings />} />
+              <Route path="/settings/security" element={<SecuritySettings />} />
+              <Route path="/settings/notifications" element={<NotificationSettings />} />
+              <Route path="/settings/appearance" element={<AppearanceSettings />} />
+              <Route path="/settings/help" element={<HelpSupport />} />
+              <Route path="/settings/signout" element={<SignOut />} />
+            </Route>
+            </Routes>
+          </ModalProvider>
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>

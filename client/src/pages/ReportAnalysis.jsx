@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, ChevronRight, Search, Filter, Trash2, Calendar, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { getReports, deleteReport } from '../services/api';
+import toast from 'react-hot-toast';
+import { useModal } from '../context/ModalContext';
 
 const getStatusBadge = (status) => {
   if (status === 'urgent') return { bg: 'bg-red-100', text: 'text-red-700', label: 'Urgent' };
@@ -29,6 +31,7 @@ export default function ReportAnalysis() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const { openConfirm } = useModal();
 
   useEffect(() => {
     fetchReports();
@@ -45,17 +48,31 @@ export default function ReportAnalysis() {
     }
   };
 
-  const handleDelete = async (id, e) => {
+  const handleDelete = (report, e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.confirm('Delete this report?')) {
-      try {
-        await deleteReport(id);
-        setReports(prev => prev.filter(r => r._id !== id));
-      } catch (err) {
-        console.error('Failed to delete:', err);
+    const reportLang = report.summaryLanguage || 'en';
+    openConfirm({
+      contextKey: 'deleteReport',
+      variant: 'danger',
+      lang: reportLang,
+      onConfirm: async () => {
+        await deleteReport(report._id);
+        setReports(prev => prev.filter(r => r._id !== report._id));
+        return {
+          type: 'success',
+          title: reportLang === 'ja' ? '削除完了' :
+                 reportLang === 'hi' ? 'सफलतापूर्वक हटाया गया' :
+                 reportLang === 'gu' ? 'સફળતાપૂર્વક કાઢી નાખવામાં આવ્યું' :
+                 reportLang === 'fr' ? 'Suppression réussie' : 'Report Deleted',
+          description: reportLang === 'ja' ? 'レポートは正常に削除されました。' :
+                       reportLang === 'hi' ? 'रिपोर्ट को सफलतापूर्वक हटा दिया गया है।' :
+                       reportLang === 'gu' ? 'રિપોર્ટ સફળતાપૂર્વક કાઢી નાખવામાં આવ્યો છે.' :
+                       reportLang === 'fr' ? 'Le rapport a été supprimé avec succès.' : 'The report has been successfully deleted.',
+          lang: reportLang,
+        };
       }
-    }
+    });
   };
 
   // Filter & search
@@ -197,7 +214,7 @@ export default function ReportAnalysis() {
                   {/* Actions */}
                   <div className="flex items-center gap-3 shrink-0">
                     <button 
-                      onClick={(e) => handleDelete(report._id, e)}
+                      onClick={(e) => handleDelete(report, e)}
                       className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer opacity-0 group-hover:opacity-100"
                       title="Delete"
                     >

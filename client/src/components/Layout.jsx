@@ -33,12 +33,14 @@ import {
   Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useModal } from '../context/ModalContext';
 
 export default function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { openConfirm } = useModal();
 
   // Panels state
   const [showSettings, setShowSettings] = useState(false);
@@ -140,13 +142,29 @@ export default function Layout() {
     }
   };
 
-  const handleMarkAllRead = async () => {
-    try {
-      await markAllNotificationsRead();
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-    } catch (err) {
-      console.error(err);
-    }
+  const handleMarkAllRead = () => {
+    const userLang = user?.language || 'en';
+    openConfirm({
+      contextKey: 'markRead',
+      variant: 'info',
+      lang: userLang,
+      onConfirm: async () => {
+        await markAllNotificationsRead();
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        return {
+          type: 'success',
+          title: userLang === 'ja' ? '既読完了' :
+                 userLang === 'hi' ? 'सभी पढ़े गए' :
+                 userLang === 'gu' ? 'બધા વાંચેલા ચિહ્નિત' :
+                 userLang === 'fr' ? 'Notifications lues' : 'Marked Read',
+          description: userLang === 'ja' ? 'すべての通知が既読としてマークされました。' :
+                       userLang === 'hi' ? 'सभी सूचनाओं को पढ़ा हुआ चिह्नित कर दिया गया है।' :
+                       userLang === 'gu' ? 'બધી સૂચનાઓને વાંચેલી તરીકે ચિહ્નિત કરવામાં આવી છે.' :
+                       userLang === 'fr' ? 'Toutes les notifications ont été marquées comme lues.' : 'All notifications have been successfully marked as read.',
+          lang: userLang,
+        };
+      }
+    });
   };
 
   const handleNotificationClick = async (notif) => {
