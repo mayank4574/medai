@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Users, Plus, UserPlus, FileText, ChevronRight, Activity, Calendar, Shield, Trash2, Loader2 } from 'lucide-react';
-import { getFamilyMembers } from '../services/api';
+import { getFamilyMembers, deleteFamilyMember } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { getAvatarUrl } from '../utils/avatar';
+import { useModal } from '../context/ModalContext';
 
 export default function Family() {
   const { user } = useAuth();
@@ -11,6 +12,7 @@ export default function Family() {
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { openConfirm } = useModal();
 
   // New member form state
   const [formData, setFormData] = useState({ name: '', relation: '', age: '', gender: 'male' });
@@ -65,6 +67,34 @@ export default function Family() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDeleteMember = (member, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const userLang = user?.language || 'en';
+    
+    openConfirm({
+      contextKey: 'deleteMember',
+      variant: 'danger',
+      lang: userLang,
+      onConfirm: async () => {
+        const res = await deleteFamilyMember(member._id);
+        setMembers(res.data);
+        return {
+          type: 'success',
+          title: userLang === 'ja' ? '削除完了' :
+                 userLang === 'hi' ? 'सफलतापूर्वक हटाया गया' :
+                 userLang === 'gu' ? 'સફળતાપૂર્વક કાઢી નાખવામાં આવ્યું' :
+                 userLang === 'fr' ? 'Suppression réussie' : 'Member Deleted',
+          description: userLang === 'ja' ? 'メンバーは正常に削除されました。' :
+                       userLang === 'hi' ? 'सदस्य को सफलतापूर्वक हटा दिया गया है।' :
+                       userLang === 'gu' ? 'સભ્ય સફળતાપૂર્વક કાઢી નાખવામાં આવ્યો છે.' :
+                       userLang === 'fr' ? 'Le membre a été supprimé avec succès.' : 'Family member has been successfully deleted.',
+          lang: userLang,
+        };
+      }
+    });
   };
 
   if (loading) {
@@ -191,9 +221,20 @@ export default function Family() {
                   onError={(e) => { e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(member.alias || member.name) + "&background=random&size=128"; }}
                   className="w-20 h-20 rounded-2xl border-4 border-white shadow-sm object-cover bg-white"
                 />
-                <span className="bg-blue-50 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-100">
-                  {member.relation}
-                </span>
+                <div className="flex flex-col items-end gap-2">
+                  <span className="bg-blue-50 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-100">
+                    {member.relation}
+                  </span>
+                  {!member.isSelf && (
+                    <button 
+                      onClick={(e) => handleDeleteMember(member, e)}
+                      className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer opacity-0 group-hover:opacity-100 absolute top-4 right-4"
+                      title="Delete Member"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
               </div>
               
               <h3 className="text-xl font-bold text-slate-900">{member.isSelf ? member.alias : member.name}</h3>

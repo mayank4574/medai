@@ -273,4 +273,16 @@ router.get('/family', protect, async (req, res) => {
   }
 });
 
+// DELETE /api/auth/family/:id
+router.delete('/family/:id', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.familyMembers = user.familyMembers.filter(m => m._id.toString() !== req.params.id);
+    await user.save();
+    res.json(user.familyMembers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

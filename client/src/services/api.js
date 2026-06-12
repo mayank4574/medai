@@ -30,6 +30,7 @@ export const getProfile = () => api.get('/auth/me');
 export const updateProfile = (data) => api.put('/auth/profile', data);
 export const addFamilyMember = (data) => api.post('/auth/family', data);
 export const getFamilyMembers = () => api.get('/auth/family');
+export const deleteFamilyMember = (id) => api.delete(`/auth/family/${id}`);
 
 // Security & Sessions
 export const enable2FA = () => api.post('/auth/2fa/enable');
