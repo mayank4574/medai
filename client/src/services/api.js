@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://medai-3onq.onrender.com/api' : 'http://localhost:5000/api');
+let API_URL = import.meta.env.PROD ? 'https://medai-3onq.onrender.com/api' : 'http://localhost:5000/api';
 
 // Safely ensure the URL always ends with /api even if the user forgets it in Vercel
 if (API_URL && !API_URL.endsWith('/api')) {
